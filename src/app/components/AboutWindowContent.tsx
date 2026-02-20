@@ -1,4 +1,4 @@
-import { MapPin, Mail, Github, Linkedin, Twitter, Instagram, Calendar } from "lucide-react";
+import { MapPin, Mail, Github, Linkedin, Twitter, Instagram, Calendar, Facebook, Palette } from "lucide-react";
 import { motion } from "motion/react";
 import { GlassCard } from "./GlassCard";
 import { profile } from "../../data/profile";
@@ -29,18 +29,29 @@ export function AboutWindowContent() {
           className="flex flex-col md:flex-row gap-6"
         >
           {/* Avatar */}
-          <div className="flex-shrink-0 flex flex-col items-center gap-3">
+          <div className="flex-shrink-0">
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
+              whileHover={{ scale: 1.05 }}
               transition={{ duration: 0.5, delay: 0.15, type: "spring", stiffness: 200 }}
-              className="w-28 h-28 rounded-3xl bg-gradient-to-br from-blue-500 via-cyan-400 to-purple-500 flex items-center justify-center ring-2 ring-blue-400/40 shadow-[0_0_24px_rgba(59,130,246,0.25)]"
+              className="relative h-full w-48 rounded-3xl overflow-hidden ring-2 ring-blue-400/40 shadow-[0_0_30px_rgba(59,130,246,0.4),0_0_60px_rgba(139,92,246,0.25)] hover:shadow-[0_0_40px_rgba(59,130,246,0.6),0_0_80px_rgba(139,92,246,0.4)] transition-shadow duration-300"
             >
-              <span className="text-3xl font-bold text-white tracking-wider">MHS</span>
+              <img
+                src={profile.profileImage}
+                alt={profile.name}
+                className="w-full h-full object-cover"
+              />
+              {/* Light sweep animation */}
+              {/* eslint-disable-next-line no-inline-styles */}
+              <div
+                className="absolute inset-0 pointer-events-none animate-sweep"
+                data-delay="0.2s"
+                style={{ animationDelay: "0.2s" }}
+              >
+                <div className="absolute inset-y-0 w-1/2 bg-gradient-to-r from-transparent via-white/[0.15] to-transparent" />
+              </div>
             </motion.div>
-            <span className="px-3 py-1 rounded-full text-xs bg-blue-500/30 border border-blue-400/30 text-blue-200">
-              {profile.status}
-            </span>
           </div>
 
           {/* Identity + Contact */}
@@ -61,6 +72,8 @@ export function AboutWindowContent() {
               {[
                 { href: profile.social.github, icon: <Github className="w-4 h-4" /> },
                 { href: profile.social.linkedin, icon: <Linkedin className="w-4 h-4" /> },
+                { href: profile.social.facebook, icon: <Facebook className="w-4 h-4" /> },
+                { href: profile.social.behance, icon: <Palette className="w-4 h-4" /> },
                 { href: profile.social.twitter, icon: <Twitter className="w-4 h-4" /> },
                 { href: profile.social.instagram, icon: <Instagram className="w-4 h-4" /> },
               ].map((s, i) => (

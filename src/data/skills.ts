@@ -69,8 +69,6 @@ export const skillCategories: SkillCategory[] = [
     color: "from-green-500 to-emerald-500",
     skills: [
       { name: "React Native", level: 75 },
-      { name: "Flutter", level: 65 },
-      { name: "iOS Development", level: 60 },
       { name: "Android Development", level: 62 },
     ],
   },
