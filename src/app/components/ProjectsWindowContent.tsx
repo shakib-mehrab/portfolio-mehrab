@@ -42,10 +42,30 @@ export function ProjectsWindowContent() {
                 sweepDelay={DELAYS[index % DELAYS.length]}
                 className="flex flex-col flex-1"
               >
-                {/* Gradient Banner */}
-                <div className="h-32 bg-gradient-to-br from-blue-500/25 to-purple-500/25 flex items-center justify-center relative flex-shrink-0">
-                  <Code2 className="w-12 h-12 text-white/[0.15]" />
-                  <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-400/40 to-transparent" />
+                {/* Banner: project screenshot if available, else gradient */}
+                <div className="relative h-32 overflow-hidden rounded-t-3xl flex-shrink-0">
+                  {project.image ? (
+                    <>
+                      <img
+                        src={project.image}
+                        alt={project.title}
+                        className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-110"
+                        onError={(e) => {
+                          (e.currentTarget as HTMLImageElement).style.display = "none";
+                          (e.currentTarget.nextElementSibling as HTMLElement | null)?.classList.remove("hidden");
+                        }}
+                      />
+                      {/* Gradient fallback shown if image errors */}
+                      <div className="hidden absolute inset-0 bg-gradient-to-br from-blue-500/25 to-purple-500/25 flex items-center justify-center">
+                        <Code2 className="w-12 h-12 text-white/[0.15]" />
+                      </div>
+                    </>
+                  ) : (
+                    <div className="w-full h-full bg-gradient-to-br from-blue-500/25 to-purple-500/25 flex items-center justify-center">
+                      <Code2 className="w-12 h-12 text-white/[0.15]" />
+                    </div>
+                  )}
+                  <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-400/40 to-transparent pointer-events-none" />
                   <span className="absolute top-3 right-3 px-2 py-0.5 rounded-full text-xs bg-black/30 border border-white/10 text-white/60">
                     {project.category}
                   </span>

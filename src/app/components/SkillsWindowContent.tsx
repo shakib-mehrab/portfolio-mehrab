@@ -1,7 +1,9 @@
-import { Code, Database, Layout, Server, Smartphone, Wrench } from "lucide-react";
-import { motion } from "motion/react";
+import { useState } from "react";
+import { Code, Database, Layout, Server, Smartphone, Wrench, ChevronDown } from "lucide-react";
+import { motion, AnimatePresence } from "motion/react";
 import { GlassCard } from "./GlassCard";
 import { skillCategories } from "../../data/skills";
+import type { SkillCategory } from "../../data/skills";
 import type { LucideIcon } from "lucide-react";
 
 const iconMap: Record<string, LucideIcon> = {
@@ -9,6 +11,89 @@ const iconMap: Record<string, LucideIcon> = {
 };
 
 const DELAYS = ["0s", "0.7s", "1.4s", "2.1s", "2.8s", "3.5s"];
+
+function SkillCategoryCard({ category, index }: { category: SkillCategory; index: number }) {
+  const [expanded, setExpanded] = useState(false);
+  const Icon = iconMap[category.iconName] ?? Code;
+
+  return (
+    <GlassCard hover sweepDelay={DELAYS[index % DELAYS.length]}>
+      {/* Category Header */}
+      <div className="flex items-center gap-3 mb-5 pb-4 border-b border-white/[0.08]">
+        <div
+          className={`w-10 h-10 rounded-xl bg-gradient-to-br ${category.color} flex items-center justify-center flex-shrink-0 shadow-lg`}
+        >
+          <Icon className="w-5 h-5 text-white" />
+        </div>
+        <h3 className="text-lg font-semibold text-white">{category.title}</h3>
+      </div>
+
+      {/* Skill Pills */}
+      <div className="flex flex-wrap gap-2 mb-4">
+        {category.skills.map((skill, i) => (
+          <span
+            key={i}
+            className="px-3 py-1 rounded-full bg-white/[0.07] border border-white/[0.12] text-sm text-white/85 hover:bg-white/[0.12] hover:border-white/20 transition-colors duration-200"
+          >
+            {skill.name}
+          </span>
+        ))}
+      </div>
+
+      {/* Toggle button */}
+      <button
+        onClick={() => setExpanded((e) => !e)}
+        className="flex items-center gap-1.5 text-xs font-medium text-blue-300/75 hover:text-blue-200 transition-colors duration-200 select-none"
+      >
+        <motion.span
+          animate={{ rotate: expanded ? 180 : 0 }}
+          transition={{ duration: 0.25 }}
+          className="inline-flex"
+        >
+          <ChevronDown className="w-3.5 h-3.5" />
+        </motion.span>
+        {expanded ? "Hide Levels" : "See Levels"}
+      </button>
+
+      {/* Collapsible progress bars */}
+      <AnimatePresence initial={false}>
+        {expanded && (
+          <motion.div
+            key="levels"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.32, ease: "easeInOut" }}
+            className="overflow-hidden"
+          >
+            <div className="space-y-3 pt-4 mt-2 border-t border-white/[0.07]">
+              {category.skills.map((skill, skillIndex) => (
+                <div key={skillIndex}>
+                  <div className="flex justify-between mb-1">
+                    <span className="text-xs text-white/55">{skill.name}</span>
+                    <span className="text-xs text-white/35">{skill.level}%</span>
+                  </div>
+                  <div className="w-full bg-white/[0.07] rounded-full h-1.5 overflow-hidden">
+                    <motion.div
+                      className="h-full rounded-full bg-gradient-to-r from-blue-400 to-cyan-400"
+                      initial={{ width: 0 }}
+                      animate={{ width: `${skill.level}%` }}
+                      transition={{
+                        duration: 0.7,
+                        delay: skillIndex * 0.05,
+                        ease: "easeOut",
+                      }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </GlassCard>
+  );
+}
 
 export function SkillsWindowContent() {
   return (
@@ -30,59 +115,16 @@ export function SkillsWindowContent() {
 
         {/* Skill Categories Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {skillCategories.map((category, index) => {
-            const Icon = iconMap[category.iconName] ?? Code;
-            return (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 24 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.45, delay: index * 0.1, ease: "easeOut" }}
-              >
-                <GlassCard hover sweepDelay={DELAYS[index % DELAYS.length]}>
-                  {/* Category Header */}
-                  <div className="flex items-center gap-3 mb-5 pb-4 border-b border-white/[0.08]">
-                    <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${category.color} flex items-center justify-center flex-shrink-0 shadow-lg`}>
-                      <Icon className="w-5 h-5 text-white" />
-                    </div>
-                    <h3 className="text-lg font-semibold text-white">{category.title}</h3>
-                  </div>
-
-                  {/* Skill Pills */}
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {category.skills.map((skill, i) => (
-                      <span
-                        key={i}
-                        className="px-3 py-1 rounded-full bg-white/[0.07] border border-white/[0.12] text-sm text-white/85 hover:bg-white/[0.12] hover:border-white/20 transition-colors duration-200"
-                      >
-                        {skill.name}
-                      </span>
-                    ))}
-                  </div>
-
-                  {/* Animated Progress Bars */}
-                  <div className="space-y-3">
-                    {category.skills.map((skill, skillIndex) => (
-                      <div key={skillIndex}>
-                        <div className="flex justify-between mb-1">
-                          <span className="text-xs text-white/55">{skill.name}</span>
-                          <span className="text-xs text-white/35">{skill.level}%</span>
-                        </div>
-                        <div className="w-full bg-white/[0.07] rounded-full h-1.5 overflow-hidden">
-                          <motion.div
-                            className="h-full rounded-full bg-gradient-to-r from-blue-400 to-cyan-400"
-                            initial={{ width: 0 }}
-                            animate={{ width: `${skill.level}%` }}
-                            transition={{ duration: 0.8, delay: index * 0.1 + skillIndex * 0.05, ease: "easeOut" }}
-                          />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </GlassCard>
-              </motion.div>
-            );
-          })}
+          {skillCategories.map((category, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.45, delay: index * 0.1, ease: "easeOut" }}
+            >
+              <SkillCategoryCard category={category} index={index} />
+            </motion.div>
+          ))}
         </div>
 
         {/* Legend */}

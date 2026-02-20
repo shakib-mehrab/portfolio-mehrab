@@ -62,12 +62,34 @@ export function AwardsWindowContent() {
                 hover
                 sweepDelay={DELAYS[index % DELAYS.length]}
               >
-                {/* Colored Banner with light sweep */}
-                <div className={`relative h-16 bg-gradient-to-r ${award.badgeColor} flex items-center justify-center overflow-hidden`}>
-                  <Award className="w-8 h-8 text-white/90" />
-                  {/* Banner sweep highlight */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full hover:translate-x-[300%] transition-transform duration-700 pointer-events-none" />
-                  <div className="absolute top-0 left-0 right-0 h-px bg-white/30" />
+                {/* Banner: certificate image if available, else gradient + icon */}
+                <div className="relative h-24 overflow-hidden rounded-t-3xl">
+                  {award.image ? (
+                    <>
+                      <img
+                        src={award.image}
+                        alt={award.title}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          // If image fails to load, hide it and show gradient fallback
+                          (e.currentTarget as HTMLImageElement).style.display = "none";
+                          (e.currentTarget.nextElementSibling as HTMLElement | null)?.classList.remove("hidden");
+                        }}
+                      />
+                      {/* Gradient fallback (hidden until image errors) */}
+                      <div className={`hidden absolute inset-0 bg-gradient-to-r ${award.badgeColor} flex items-center justify-center`}>
+                        <Award className="w-8 h-8 text-white/90" />
+                      </div>
+                    </>
+                  ) : (
+                    /* Gradient placeholder */
+                    <div className={`w-full h-full bg-gradient-to-r ${award.badgeColor} flex items-center justify-center`}>
+                      <Award className="w-8 h-8 text-white/90" />
+                    </div>
+                  )}
+                  {/* Sweep highlight on hover */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/15 to-transparent -translate-x-full hover:translate-x-[300%] transition-transform duration-700 pointer-events-none" />
+                  <div className="absolute top-0 left-0 right-0 h-px bg-white/25 pointer-events-none" />
                 </div>
 
                 {/* Content */}

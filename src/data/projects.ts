@@ -5,6 +5,8 @@ export interface Project {
   githubUrl?: string;
   liveUrl?: string;
   category: string;
+  /** Optional project screenshot, e.g. "/images/projects/ai-task-manager.jpg" */
+  image?: string;
 }
 
 export const projects: Project[] = [
@@ -16,6 +18,7 @@ export const projects: Project[] = [
     githubUrl: "#",
     liveUrl: "#",
     category: "AI / Full Stack",
+    image: "../../public/images/projects/project1.png",
   },
   {
     title: "Real-time Collaboration Platform",
@@ -25,6 +28,7 @@ export const projects: Project[] = [
     githubUrl: "#",
     liveUrl: "#",
     category: "Full Stack",
+    // image: "/images/projects/collaboration-platform.jpg",
   },
   {
     title: "E-Commerce Mobile App",
@@ -34,6 +38,7 @@ export const projects: Project[] = [
     githubUrl: "#",
     liveUrl: "#",
     category: "Mobile",
+    // image: "/images/projects/ecommerce-app.jpg",
   },
   {
     title: "Weather Analytics Dashboard",
@@ -43,6 +48,7 @@ export const projects: Project[] = [
     githubUrl: "#",
     liveUrl: "#",
     category: "Data / Frontend",
+    // image: "/images/projects/weather-dashboard.jpg",
   },
   {
     title: "Social Media Analytics Tool",
@@ -52,6 +58,7 @@ export const projects: Project[] = [
     githubUrl: "#",
     liveUrl: "#",
     category: "Analytics",
+    // image: "/images/projects/social-analytics.jpg",
   },
   {
     title: "Code Snippet Manager",
@@ -61,5 +68,6 @@ export const projects: Project[] = [
     githubUrl: "#",
     liveUrl: "#",
     category: "Dev Tool",
+    // image: "/images/projects/snippet-manager.jpg",
   },
 ];
