@@ -1,86 +1,87 @@
-import { GraduationCap, Calendar, MapPin, Award } from "lucide-react";
-import { ImageWithFallback } from "./figma/ImageWithFallback";
-
-interface EducationItem {
-  degree: string;
-  institution: string;
-  location: string;
-  period: string;
-  gpa: string;
-  description: string;
-  image?: string;
-}
+import { GraduationCap, Calendar } from "lucide-react";
+import { motion } from "motion/react";
+import { GlassCard } from "./GlassCard";
+import { education } from "../../data/education";
 
 export function EducationWindowContent() {
-  const education: EducationItem[] = [
-    {
-      degree: "Bachelor of Science in Computer Science & Engineering",
-      institution: "Stanford University",
-      location: "Stanford, CA",
-      period: "2020 - 2024",
-      gpa: "3.8/4.0",
-      description:
-        "Focused on software engineering, artificial intelligence, and blockchain technology. Member of the Computer Science Honor Society and Google Developer Student Club.",
-      image: "https://images.unsplash.com/photo-1631599143424-5bc234fbebf1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx1bml2ZXJzaXR5JTIwY2FtcHVzJTIwYnVpbGRpbmd8ZW58MXx8fHwxNzcxNTMwMjQ5fDA&ixlib=rb-4.1.0&q=80&w=1080",
-    },
-    {
-      degree: "High School Diploma",
-      institution: "Lincoln High School",
-      location: "San Francisco, CA",
-      period: "2016 - 2020",
-      gpa: "3.9/4.0",
-      description:
-        "Valedictorian. Advanced Placement courses in Computer Science, Mathematics, and Physics. Captain of the Robotics Team.",
-    },
-  ];
-
   return (
     <div className="p-6 overflow-auto h-full">
-      <div className="max-w-4xl mx-auto space-y-6">
-        <div className="backdrop-blur-xl bg-gradient-to-r from-blue-500/30 to-blue-600/30 text-white rounded-lg p-6 shadow-lg border border-white/30">
-          <div className="flex items-center gap-3 mb-2">
-            <GraduationCap className="w-8 h-8" />
-            <h2 className="text-3xl font-bold drop-shadow-lg">Education</h2>
+      <div className="max-w-3xl mx-auto space-y-6">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: -16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="text-center"
+        >
+          <div className="flex items-center justify-center gap-3 mb-1">
+            <GraduationCap className="w-7 h-7 text-blue-300" />
+            <h2 className="text-4xl font-bold inline-block bg-gradient-to-r from-blue-200 via-cyan-200 to-purple-200 bg-clip-text text-transparent">
+              Education
+            </h2>
           </div>
-          <p className="text-blue-100 drop-shadow-md">My academic journey and achievements</p>
-        </div>
+          <div className="mt-2 mx-auto h-0.5 w-24 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full" />
+          <p className="text-white/50 text-sm mt-2">My academic journey and qualifications</p>
+        </motion.div>
 
-        {education.map((edu, index) => (
-          <div
-            key={index}
-            className="backdrop-blur-xl bg-white/20 rounded-lg shadow-md overflow-hidden border border-white/30"
-          >
-            {edu.image && (
-              <ImageWithFallback
-                src={edu.image}
-                alt={edu.institution}
-                className="w-full h-48 object-cover"
-              />
-            )}
-            <div className="p-6">
-              <h3 className="text-2xl font-bold text-white mb-2 drop-shadow-lg">{edu.degree}</h3>
-              <div className="flex items-center gap-2 text-blue-200 mb-1">
-                <GraduationCap className="w-4 h-4" />
-                <span className="font-semibold drop-shadow-md">{edu.institution}</span>
-              </div>
-              <div className="flex items-center gap-4 text-white/80 mb-4">
-                <div className="flex items-center gap-1">
-                  <MapPin className="w-4 h-4" />
-                  <span className="text-sm">{edu.location}</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <Calendar className="w-4 h-4" />
-                  <span className="text-sm">{edu.period}</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <Award className="w-4 h-4" />
-                  <span className="text-sm font-semibold">GPA: {edu.gpa}</span>
-                </div>
-              </div>
-              <p className="text-white/90 leading-relaxed drop-shadow-sm">{edu.description}</p>
+        {/* Stats */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.12 }}
+          className="flex justify-center"
+        >
+          <GlassCard padding="sm" className="!rounded-2xl" sweepDelay="0.2s">
+            <div className="flex items-center gap-2">
+              <GraduationCap className="w-3.5 h-3.5 text-blue-300" />
+              <span className="text-white font-semibold text-sm">{education.length}</span>
+              <span className="text-white/55 text-sm">Degrees</span>
             </div>
-          </div>
-        ))}
+          </GlassCard>
+        </motion.div>
+
+        {/* Education Timeline */}
+        <div className="space-y-5">
+          {education.map((edu, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.45, delay: index * 0.12, ease: "easeOut" }}
+            >
+              <GlassCard padding="none" hover sweepDelay={`${index * 0.5}s`}>
+                <div className="flex">
+                  <div className="w-1 flex-shrink-0 bg-gradient-to-b from-blue-400 to-purple-400 rounded-l-3xl" />
+                  <div className="p-6 flex-1">
+                    <div className="flex flex-wrap items-start justify-between gap-3 mb-3">
+                      <div>
+                        <h3 className="text-xl font-bold text-white mb-1">{edu.degree}</h3>
+                        <div className="flex items-center gap-2 text-blue-200 text-sm font-medium">
+                          <GraduationCap className="w-4 h-4" />
+                          <span>{edu.institution}</span>
+                        </div>
+                      </div>
+                      <span
+                        className={`px-3 py-1 rounded-full text-xs border flex-shrink-0 ${
+                          edu.status === "Final Year"
+                            ? "bg-blue-500/30 border-blue-400/30 text-blue-200"
+                            : "bg-green-500/30 border-green-400/30 text-green-200"
+                        }`}
+                      >
+                        {edu.status}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1 text-white/50 text-sm mb-3">
+                      <Calendar className="w-4 h-4" />
+                      <span>{edu.period}</span>
+                    </div>
+                    <p className="text-white/80 leading-relaxed text-sm">{edu.description}</p>
+                  </div>
+                </div>
+              </GlassCard>
+            </motion.div>
+          ))}
+        </div>
       </div>
     </div>
   );

@@ -163,7 +163,7 @@ export function AeroWindow({
       </div>
 
       {/* Window Content */}
-      <div className="h-[calc(100%-2rem)] overflow-auto backdrop-blur-xl bg-white/10 border-t border-white/20">
+      <div className="h-[calc(100%-2rem)] overflow-auto backdrop-blur-2xl bg-black/[0.70] border-t border-white/10" style={{ scrollbarWidth: "thin", scrollbarColor: "rgba(59,130,246,0.25) transparent" }}>
         {children}
       </div>
     </motion.div>

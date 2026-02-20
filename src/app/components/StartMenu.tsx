@@ -16,6 +16,8 @@ import {
   Code,
   Trophy,
   Briefcase,
+  UserCheck,
+  Medal,
 } from "lucide-react";
 
 interface StartMenuProps {
@@ -35,6 +37,8 @@ export function StartMenu({ isOpen, onClose, onMenuItemClick }: StartMenuProps) 
     { icon: <Trophy className="w-5 h-5" />, label: "Achievements", id: "achievements" },
     { icon: <Award className="w-5 h-5" />, label: "Co-Curriculars", id: "cocurriculars" },
     { icon: <Mail className="w-5 h-5" />, label: "Contact Me", id: "contact" },
+    { icon: <UserCheck className="w-5 h-5" />, label: "Experience", id: "experience" },
+    { icon: <Medal className="w-5 h-5" />, label: "Certifications", id: "awards" },
   ];
 
   const rightMenuItems = [
@@ -76,7 +80,7 @@ export function StartMenu({ isOpen, onClose, onMenuItemClick }: StartMenuProps) 
               <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white shadow-lg">
                 <User className="w-6 h-6" />
               </div>
-              <span className="font-semibold text-gray-800">Your Name</span>
+              <span className="font-semibold text-gray-800">Mehrab Hossain Shakib</span>
             </div>
 
             {/* Menu Content */}

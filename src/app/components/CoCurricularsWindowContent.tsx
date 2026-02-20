@@ -1,106 +1,98 @@
-import { Users, Calendar, MapPin, Award } from "lucide-react";
+import { Users, Cpu, Heart, Link, BookOpen, PenLine, Calendar, MapPin } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+import { motion } from "motion/react";
+import { GlassCard } from "./GlassCard";
+import { cocurriculars } from "../../data/cocurriculars";
 
-interface Activity {
-  title: string;
-  role: string;
-  organization: string;
-  period: string;
-  description: string;
-}
+const iconMap: Record<string, LucideIcon> = {
+  Users, Cpu, Heart, Link, BookOpen, PenLine,
+};
+
+const DELAYS = ["0s", "0.6s", "1.2s", "1.8s", "2.4s", "3.0s"];
 
 export function CoCurricularsWindowContent() {
-  const activities: Activity[] = [
-    {
-      title: "Google Developer Student Club",
-      role: "President",
-      organization: "Stanford University",
-      period: "2023 - 2024",
-      description:
-        "Led a team of 30+ members in organizing tech workshops, hackathons, and coding bootcamps. Facilitated connections between students and industry professionals.",
-    },
-    {
-      title: "Robotics Team",
-      role: "Team Captain",
-      organization: "University Robotics Club",
-      period: "2022 - 2024",
-      description:
-        "Managed a team of 15 students in designing and building autonomous robots for national competitions. Secured 2nd place in the Regional Robotics Championship.",
-    },
-    {
-      title: "Tech for Good Initiative",
-      role: "Volunteer Developer",
-      organization: "Non-Profit Organization",
-      period: "2021 - Present",
-      description:
-        "Developed web applications for local non-profits to help streamline their operations. Created a donation management system used by 5+ organizations.",
-    },
-    {
-      title: "Blockchain Research Group",
-      role: "Research Assistant",
-      organization: "Stanford CS Department",
-      period: "2022 - 2023",
-      description:
-        "Conducted research on scalability solutions for blockchain networks. Co-authored a paper on Layer 2 protocols published in a peer-reviewed journal.",
-    },
-    {
-      title: "Code Mentorship Program",
-      role: "Mentor",
-      organization: "University Mentorship Initiative",
-      period: "2021 - 2024",
-      description:
-        "Mentored 20+ first-year students in programming fundamentals and career development. Helped students secure internships at major tech companies.",
-    },
-    {
-      title: "Tech Blog Writer",
-      role: "Contributing Author",
-      organization: "Medium & Dev.to",
-      period: "2020 - Present",
-      description:
-        "Published 50+ articles on web development, blockchain, and software engineering best practices. Reached 10K+ readers monthly.",
-    },
-  ];
-
   return (
     <div className="p-6 overflow-auto h-full">
-      <div className="max-w-5xl mx-auto">
-        <div className="backdrop-blur-xl bg-gradient-to-r from-indigo-500/30 to-purple-500/30 text-white rounded-lg p-6 shadow-lg mb-6 border border-white/30">
-          <div className="flex items-center gap-3 mb-2">
-            <Users className="w-8 h-8" />
-            <h2 className="text-3xl font-bold drop-shadow-lg">Co-Curricular Activities</h2>
+      <div className="max-w-5xl mx-auto space-y-6">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: -16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="text-center"
+        >
+          <div className="flex items-center justify-center gap-3 mb-1">
+            <Users className="w-7 h-7 text-blue-300" />
+            <h2 className="text-4xl font-bold inline-block bg-gradient-to-r from-blue-200 via-cyan-200 to-purple-200 bg-clip-text text-transparent">
+              Co-Curricular Activities
+            </h2>
           </div>
-          <p className="text-indigo-100 drop-shadow-md">Leadership roles and community involvement</p>
-        </div>
+          <div className="mt-2 mx-auto h-0.5 w-24 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full" />
+          <p className="text-white/50 text-sm mt-2">Leadership roles and community involvement</p>
+        </motion.div>
 
-        <div className="grid gap-5">
-          {activities.map((activity, index) => (
-            <div
-              key={index}
-              className="backdrop-blur-xl bg-white/20 rounded-lg shadow-md p-6 border border-white/30 hover:shadow-lg transition-shadow"
-            >
-              <div className="flex items-start justify-between mb-3">
-                <div>
-                  <h3 className="text-xl font-bold text-white mb-1 drop-shadow-md">{activity.title}</h3>
-                  <div className="flex items-center gap-2 text-indigo-200 font-semibold text-sm">
-                    <Award className="w-4 h-4" />
-                    <span>{activity.role}</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex flex-wrap gap-4 text-sm text-white/80 mb-3">
-                <div className="flex items-center gap-1">
-                  <MapPin className="w-4 h-4" />
-                  <span>{activity.organization}</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <Calendar className="w-4 h-4" />
-                  <span>{activity.period}</span>
-                </div>
-              </div>
-
-              <p className="text-white/90 leading-relaxed drop-shadow-sm">{activity.description}</p>
+        {/* Stats */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.12 }}
+          className="flex justify-center"
+        >
+          <GlassCard padding="sm" className="!rounded-2xl" sweepDelay="0.2s">
+            <div className="flex items-center gap-2">
+              <Users className="w-3.5 h-3.5 text-blue-300" />
+              <span className="text-white font-semibold text-sm">{cocurriculars.length}</span>
+              <span className="text-white/55 text-sm">Activities</span>
             </div>
-          ))}
+          </GlassCard>
+        </motion.div>
+
+        {/* Activities Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          {cocurriculars.map((activity, index) => {
+            const Icon = iconMap[activity.iconName] ?? Users;
+            return (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.45, delay: index * 0.09, ease: "easeOut" }}
+              >
+                <GlassCard hover padding="none" sweepDelay={DELAYS[index % DELAYS.length]}>
+                  <div className="flex">
+                    {/* Left accent bar */}
+                    <div className="w-1 flex-shrink-0 bg-gradient-to-b from-blue-400 to-purple-400 rounded-l-3xl" />
+                    <div className="p-5 flex-1">
+                      <div className="flex items-start gap-3 mb-3">
+                        <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${activity.color} flex items-center justify-center flex-shrink-0 shadow-lg`}>
+                          <Icon className="w-5 h-5 text-white" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h3 className="text-white font-semibold leading-tight">{activity.title}</h3>
+                          <span className="inline-block mt-1 px-2 py-0.5 rounded-full text-xs bg-blue-500/20 border border-blue-400/25 text-blue-200">
+                            {activity.role}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="flex flex-wrap gap-3 text-xs text-white/40 mb-3">
+                        <div className="flex items-center gap-1">
+                          <MapPin className="w-3 h-3" />
+                          <span>{activity.organization}</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Calendar className="w-3 h-3" />
+                          <span>{activity.period}</span>
+                        </div>
+                      </div>
+
+                      <p className="text-white/65 text-sm leading-relaxed">{activity.description}</p>
+                    </div>
+                  </div>
+                </GlassCard>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
     </div>

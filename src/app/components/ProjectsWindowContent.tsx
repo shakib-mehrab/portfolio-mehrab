@@ -1,139 +1,99 @@
 import { ExternalLink, Github, Code2 } from "lucide-react";
-import { ImageWithFallback } from "./figma/ImageWithFallback";
+import { motion } from "motion/react";
+import { GlassCard } from "./GlassCard";
+import { projects } from "../../data/projects";
 
-interface Project {
-  title: string;
-  description: string;
-  image: string;
-  technologies: string[];
-  githubUrl?: string;
-  liveUrl?: string;
-}
+const DELAYS = ["0s", "0.4s", "0.8s", "1.2s", "1.6s", "2.0s"];
 
 export function ProjectsWindowContent() {
-  const projects: Project[] = [
-    {
-      title: "DeFi Trading Platform",
-      description:
-        "A decentralized finance platform for trading crypto assets with automated market making and liquidity pools. Built with Solidity smart contracts and React frontend.",
-      image:
-        "https://images.unsplash.com/photo-1700619663094-be321751b545?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjB3b3Jrc3BhY2UlMjBzZXR1cHxlbnwxfHx8fDE3NzE0ODYxMDN8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      technologies: ["React", "Solidity", "Web3.js", "Ethereum", "Tailwind CSS"],
-      githubUrl: "#",
-      liveUrl: "#",
-    },
-    {
-      title: "AI-Powered Task Manager",
-      description:
-        "Smart task management application that uses machine learning to predict task duration and optimize scheduling. Features real-time collaboration and productivity analytics.",
-      image:
-        "https://images.unsplash.com/photo-1700619663094-be321751b545?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjB3b3Jrc3BhY2UlMjBzZXR1cHxlbnwxfHx8fDE3NzE0ODYxMDN8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      technologies: ["Next.js", "TypeScript", "Python", "TensorFlow", "MongoDB"],
-      githubUrl: "#",
-      liveUrl: "#",
-    },
-    {
-      title: "Social Media Analytics Dashboard",
-      description:
-        "Comprehensive analytics platform for tracking social media performance across multiple platforms. Real-time data visualization and automated reporting features.",
-      image:
-        "https://images.unsplash.com/photo-1700619663094-be321751b545?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjB3b3Jrc3BhY2UlMjBzZXR1cHxlbnwxfHx8fDE3NzE0ODYxMDN8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      technologies: ["React", "Node.js", "Express", "PostgreSQL", "Recharts"],
-      githubUrl: "#",
-      liveUrl: "#",
-    },
-    {
-      title: "E-Commerce Marketplace",
-      description:
-        "Full-featured online marketplace with vendor management, payment processing, inventory tracking, and customer reviews. Mobile-responsive design.",
-      image:
-        "https://images.unsplash.com/photo-1700619663094-be321751b545?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjB3b3Jrc3BhY2UlMjBzZXR1cHxlbnwxfHx8fDE3NzE0ODYxMDN8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      technologies: ["React", "Redux", "Node.js", "MongoDB", "Stripe"],
-      githubUrl: "#",
-      liveUrl: "#",
-    },
-    {
-      title: "Real-Time Chat Application",
-      description:
-        "Secure messaging platform with end-to-end encryption, file sharing, and video calling capabilities. Supports group chats and custom emojis.",
-      image:
-        "https://images.unsplash.com/photo-1700619663094-be321751b545?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjB3b3Jrc3BhY2UlMjBzZXR1cHxlbnwxfHx8fDE3NzE0ODYxMDN8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      technologies: ["React", "Socket.io", "Node.js", "WebRTC", "Redis"],
-      githubUrl: "#",
-      liveUrl: "#",
-    },
-    {
-      title: "Portfolio Management System",
-      description:
-        "Investment portfolio tracker with real-time stock data, performance analytics, and risk assessment. Includes automated trading alerts.",
-      image:
-        "https://images.unsplash.com/photo-1700619663094-be321751b545?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjB3b3Jrc3BhY2UlMjBzZXR1cHxlbnwxfHx8fDE3NzE0ODYxMDN8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      technologies: ["Next.js", "TypeScript", "Python", "FastAPI", "PostgreSQL"],
-      githubUrl: "#",
-    },
-  ];
-
   return (
     <div className="p-6 overflow-auto h-full">
-      <div className="max-w-6xl mx-auto">
-        <div className="backdrop-blur-xl bg-gradient-to-r from-green-500/30 to-blue-500/30 text-white rounded-lg p-6 shadow-lg mb-6 border border-white/30">
-          <div className="flex items-center gap-3 mb-2">
-            <Code2 className="w-8 h-8" />
-            <h2 className="text-3xl font-bold drop-shadow-lg">Projects</h2>
+      <div className="max-w-6xl mx-auto space-y-6">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: -16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="text-center"
+        >
+          <div className="flex items-center justify-center gap-3 mb-1">
+            <Code2 className="w-7 h-7 text-blue-300" />
+            <h2 className="text-4xl font-bold inline-block bg-gradient-to-r from-blue-200 via-cyan-200 to-purple-200 bg-clip-text text-transparent">
+              Projects
+            </h2>
           </div>
-          <p className="text-green-100 drop-shadow-md">Showcase of my recent work and contributions</p>
-        </div>
+          <div className="mt-2 mx-auto h-0.5 w-24 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full" />
+          <p className="text-white/50 text-sm mt-2">Showcase of my recent work and contributions</p>
+        </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Projects Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {projects.map((project, index) => (
-            <div
+            <motion.div
               key={index}
-              className="backdrop-blur-xl bg-white/20 rounded-lg shadow-md overflow-hidden border border-white/30 hover:shadow-xl transition-shadow"
+              initial={{ opacity: 0, y: 28 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.45, delay: index * 0.08, ease: "easeOut" }}
+              className="flex flex-col"
             >
-              <ImageWithFallback
-                src={project.image}
-                alt={project.title}
-                className="w-full h-48 object-cover"
-              />
-              <div className="p-5">
-                <h3 className="text-xl font-bold text-white mb-2 drop-shadow-lg">{project.title}</h3>
-                <p className="text-white/80 text-sm mb-4 leading-relaxed drop-shadow-sm">
-                  {project.description}
-                </p>
-
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {project.technologies.map((tech, techIndex) => (
-                    <span
-                      key={techIndex}
-                      className="px-2 py-1 backdrop-blur-md bg-blue-500/30 text-white text-xs font-medium rounded border border-white/30"
-                    >
-                      {tech}
-                    </span>
-                  ))}
+              <GlassCard
+                padding="none"
+                hover
+                sweepDelay={DELAYS[index % DELAYS.length]}
+                className="flex flex-col flex-1"
+              >
+                {/* Gradient Banner */}
+                <div className="h-32 bg-gradient-to-br from-blue-500/25 to-purple-500/25 flex items-center justify-center relative flex-shrink-0">
+                  <Code2 className="w-12 h-12 text-white/[0.15]" />
+                  <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-400/40 to-transparent" />
+                  <span className="absolute top-3 right-3 px-2 py-0.5 rounded-full text-xs bg-black/30 border border-white/10 text-white/60">
+                    {project.category}
+                  </span>
                 </div>
 
-                <div className="flex gap-2">
-                  {project.githubUrl && (
-                    <a
-                      href={project.githubUrl}
-                      className="flex items-center gap-1 px-3 py-1.5 backdrop-blur-md bg-gray-700/40 text-white text-sm rounded hover:bg-gray-700/60 transition-colors border border-white/30"
-                    >
-                      <Github className="w-3 h-3" />
-                      GitHub
-                    </a>
-                  )}
-                  {project.liveUrl && (
-                    <a
-                      href={project.liveUrl}
-                      className="flex items-center gap-1 px-3 py-1.5 backdrop-blur-md bg-blue-500/40 text-white text-sm rounded hover:bg-blue-500/60 transition-colors border border-white/30"
-                    >
-                      <ExternalLink className="w-3 h-3" />
-                      Live Demo
-                    </a>
-                  )}
+                {/* Content */}
+                <div className="p-5 flex flex-col flex-1">
+                  <h3 className="text-lg font-bold text-white mb-2">{project.title}</h3>
+                  <p className="text-white/65 text-sm leading-relaxed mb-4 flex-1 line-clamp-3">
+                    {project.description}
+                  </p>
+
+                  {/* Tech Pills */}
+                  <div className="flex flex-wrap gap-1.5 mb-4">
+                    {project.technologies.map((tech, i) => (
+                      <span
+                        key={i}
+                        className="px-2 py-0.5 rounded-full bg-white/[0.07] border border-white/[0.12] text-xs text-white/65 hover:text-white hover:border-white/25 transition-colors duration-200"
+                      >
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex gap-2">
+                    {project.githubUrl && (
+                      <a
+                        href={project.githubUrl}
+                        className="flex items-center gap-1.5 px-3 py-1.5 bg-white/[0.07] border border-white/[0.10] text-white/65 text-xs rounded-xl hover:bg-white/[0.14] hover:text-white hover:border-white/20 transition-all duration-200"
+                      >
+                        <Github className="w-3 h-3" />
+                        GitHub
+                      </a>
+                    )}
+                    {project.liveUrl && (
+                      <a
+                        href={project.liveUrl}
+                        className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-blue-500/30 to-cyan-500/30 border border-blue-400/20 text-white/90 text-xs rounded-xl hover:from-blue-500/50 hover:to-cyan-500/50 hover:shadow-[0_0_14px_rgba(59,130,246,0.3)] transition-all duration-200"
+                      >
+                        <ExternalLink className="w-3 h-3" />
+                        Live Demo
+                      </a>
+                    )}
+                  </div>
                 </div>
-              </div>
-            </div>
+              </GlassCard>
+            </motion.div>
           ))}
         </div>
       </div>

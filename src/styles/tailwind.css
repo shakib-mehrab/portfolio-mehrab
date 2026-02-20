@@ -2,3 +2,21 @@
 @source '../**/*.{js,ts,jsx,tsx}';
 
 @import 'tw-animate-css';
+
+@keyframes sweep {
+  0% { transform: translateX(-150%) skewX(-12deg); opacity: 0; }
+  10% { opacity: 1; }
+  50% { transform: translateX(250%) skewX(-12deg); opacity: 0; }
+  100% { transform: translateX(250%) skewX(-12deg); opacity: 0; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) translateX(0px); }
+  33% { transform: translateY(-10px) translateX(4px); }
+  66% { transform: translateY(4px) translateX(-4px); }
+}
+
+@keyframes orbit {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}

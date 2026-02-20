@@ -10,6 +10,8 @@ import { ProjectsWindowContent } from "./components/ProjectsWindowContent";
 import { AchievementsWindowContent } from "./components/AchievementsWindowContent";
 import { CoCurricularsWindowContent } from "./components/CoCurricularsWindowContent";
 import { ContactWindowContent } from "./components/ContactWindowContent";
+import { ExperienceWindowContent } from "./components/ExperienceWindowContent";
+import { AwardsWindowContent } from "./components/AwardsWindowContent";
 import {
   User,
   GraduationCap,
@@ -20,7 +22,16 @@ import {
   Mail,
   FileText,
   Trash2,
+  UserCheck,
+  Medal,
 } from "lucide-react";
+
+function getCenterPosition(width: number, height: number) {
+  return {
+    x: Math.max(10, Math.round((window.innerWidth - width) / 2)),
+    y: Math.max(10, Math.round((window.innerHeight - 48 - height) / 2)),
+  };
+}
 
 interface OpenWindow {
   id: string;
@@ -33,15 +44,13 @@ interface OpenWindow {
 }
 
 export default function App() {
-  const [openWindows, setOpenWindows] = useState<OpenWindow[]>([
+  const [openWindows, setOpenWindows] = useState<OpenWindow[]>(() => [
     {
       id: "welcome",
       title: "Welcome",
       icon: <User className="w-4 h-4" />,
-      content: (
-        <WelcomeWindowContent profileImage="https://images.unsplash.com/photo-1737575655055-e3967cbefd03?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwcm9mZXNzaW9uYWwlMjBkZXZlbG9wZXIlMjBwb3J0cmFpdHxlbnwxfHx8fDE3NzE1ODE3MzF8MA&ixlib=rb-4.1.0&q=80&w=1080" />
-      ),
-      position: { x: 250, y: 100 },
+      content: <WelcomeWindowContent />,
+      position: getCenterPosition(800, 500),
       size: { width: 800, height: 500 },
       isMaximized: false,
     },
@@ -131,6 +140,24 @@ export default function App() {
       ),
       label: "Recycle Bin",
     },
+    {
+      id: "experience",
+      icon: (
+        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-teal-400 via-teal-500 to-teal-600 flex items-center justify-center shadow-lg">
+          <UserCheck className="w-7 h-7 text-white drop-shadow-md" />
+        </div>
+      ),
+      label: "Experience",
+    },
+    {
+      id: "awards",
+      icon: (
+        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-400 via-amber-500 to-amber-600 flex items-center justify-center shadow-lg">
+          <Medal className="w-7 h-7 text-white drop-shadow-md" />
+        </div>
+      ),
+      label: "Certifications",
+    },
   ];
 
   const openWindow = (iconId: string) => {
@@ -145,9 +172,7 @@ export default function App() {
       about: {
         title: "About Me",
         icon: <User className="w-4 h-4" />,
-        content: (
-          <AboutWindowContent profileImage="https://images.unsplash.com/photo-1737575655055-e3967cbefd03?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwcm9mZXNzaW9uYWwlMjBkZXZlbG9wZXIlMjBwb3J0cmFpdHxlbnwxfHx8fDE3NzE1ODE3MzF8MA&ixlib=rb-4.1.0&q=80&w=1080" />
-        ),
+        content: <AboutWindowContent />,
         position: { x: 150, y: 80 },
         size: { width: 900, height: 600 },
         isMaximized: false,
@@ -204,12 +229,14 @@ export default function App() {
         title: "Resume",
         icon: <FileText className="w-4 h-4" />,
         content: (
-          <div className="flex items-center justify-center h-full bg-gray-100">
-            <div className="text-center">
-              <FileText className="w-20 h-20 text-blue-600 mx-auto mb-4" />
-              <h3 className="text-2xl font-bold text-gray-800 mb-2">Resume</h3>
-              <p className="text-gray-600 mb-4">Download my resume to learn more</p>
-              <button className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+          <div className="flex items-center justify-center h-full p-8">
+            <div className="text-center backdrop-blur-xl bg-white/[0.05] border border-white/[0.08] rounded-3xl p-10 shadow-[0_0_35px_rgba(59,130,246,0.20)]">
+              <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center mx-auto mb-5 shadow-lg">
+                <FileText className="w-10 h-10 text-white" />
+              </div>
+              <h3 className="text-2xl font-bold inline-block bg-gradient-to-r from-blue-200 via-cyan-200 to-purple-200 bg-clip-text text-transparent mb-2">Resume</h3>
+              <p className="text-white/60 mb-6 text-sm">Download my resume to learn more about my experience</p>
+              <button className="px-6 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white rounded-xl font-semibold transition-all duration-200 hover:shadow-[0_0_20px_rgba(59,130,246,0.4)] hover:-translate-y-0.5">
                 Download PDF
               </button>
             </div>
@@ -223,16 +250,34 @@ export default function App() {
         title: "Recycle Bin",
         icon: <Trash2 className="w-4 h-4" />,
         content: (
-          <div className="flex items-center justify-center h-full bg-gray-100">
-            <div className="text-center">
-              <Trash2 className="w-20 h-20 text-gray-600 mx-auto mb-4" />
-              <h3 className="text-2xl font-bold text-gray-800 mb-2">Recycle Bin</h3>
-              <p className="text-gray-600">No items in the recycle bin</p>
+          <div className="flex items-center justify-center h-full p-8">
+            <div className="text-center backdrop-blur-xl bg-white/[0.05] border border-white/[0.08] rounded-3xl p-10 shadow-[0_0_35px_rgba(59,130,246,0.10)]">
+              <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-gray-500 to-gray-700 flex items-center justify-center mx-auto mb-5 shadow-lg">
+                <Trash2 className="w-10 h-10 text-white" />
+              </div>
+              <h3 className="text-2xl font-bold text-white/80 mb-2">Recycle Bin</h3>
+              <p className="text-white/45 text-sm">No items in the recycle bin</p>
             </div>
           </div>
         ),
         position: { x: 350, y: 180 },
         size: { width: 500, height: 400 },
+        isMaximized: false,
+      },
+      experience: {
+        title: "Experience",
+        icon: <UserCheck className="w-4 h-4" />,
+        content: <ExperienceWindowContent />,
+        position: { x: 170, y: 80 },
+        size: { width: 950, height: 650 },
+        isMaximized: false,
+      },
+      awards: {
+        title: "Certifications",
+        icon: <Medal className="w-4 h-4" />,
+        content: <AwardsWindowContent />,
+        position: { x: 190, y: 100 },
+        size: { width: 1050, height: 700 },
         isMaximized: false,
       },
     };
@@ -242,6 +287,7 @@ export default function App() {
       const newWindow: OpenWindow = {
         id: iconId,
         ...config,
+        position: getCenterPosition(config.size.width, config.size.height),
       };
       setOpenWindows([...openWindows, newWindow]);
       setActiveWindowId(iconId);
@@ -266,30 +312,42 @@ export default function App() {
 
   return (
     <div
-      className="size-full relative overflow-hidden"
+      className="w-full h-screen relative overflow-hidden"
       style={{
         background:
-          "radial-gradient(ellipse at top, #1e3a8a 0%, #312e81 25%, #1e1b4b 50%, #0f172a 75%, #020617 100%)",
+          "radial-gradient(ellipse at 30% 20%, #0c1a3a 0%, #0a0a1e 35%, #060412 65%, #020617 100%)",
       }}
     >
-      {/* Cosmic animated overlay */}
+      {/* Ambient gradient overlay */}
       <div
-        className="absolute inset-0 opacity-60"
+        className="absolute inset-0 opacity-40"
         style={{
           background:
-            "radial-gradient(circle at 20% 50%, rgba(147, 51, 234, 0.3) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(59, 130, 246, 0.3) 0%, transparent 50%), radial-gradient(circle at 40% 20%, rgba(236, 72, 153, 0.2) 0%, transparent 50%)",
-          filter: "blur(60px)",
+            "radial-gradient(circle at 15% 40%, rgba(59, 130, 246, 0.18) 0%, transparent 55%), radial-gradient(circle at 85% 70%, rgba(139, 92, 246, 0.15) 0%, transparent 55%), radial-gradient(circle at 50% 10%, rgba(6, 182, 212, 0.10) 0%, transparent 45%)",
+          filter: "blur(40px)",
         }}
       />
 
-      {/* Desktop Icons */}
-      <div className="absolute top-4 left-4 flex flex-col gap-2 z-10">
+      {/* Decorative floating elements — reference_style inspired */}
+      <div className="absolute top-1/4 right-[12%] w-56 h-56 border border-blue-500/10 rounded-full pointer-events-none" style={{ animationName: "orbit", animationDuration: "40s", animationTimingFunction: "linear", animationIterationCount: "infinite" }} />
+      <div className="absolute bottom-1/3 left-[30%] w-36 h-36 border border-purple-500/10 rounded-lg rotate-12 pointer-events-none" />
+      <div className="absolute top-[12%] right-[35%] w-2 h-2 bg-blue-400/60 rounded-full pointer-events-none" style={{ animationName: "float", animationDuration: "6s", animationTimingFunction: "ease-in-out", animationIterationCount: "infinite" }} />
+      <div className="absolute top-[60%] right-[8%] w-1.5 h-1.5 bg-purple-400/60 rounded-full pointer-events-none" style={{ animationName: "float", animationDuration: "8s", animationTimingFunction: "ease-in-out", animationIterationCount: "infinite", animationDelay: "2s" }} />
+      <div className="absolute top-[35%] left-[40%] w-1 h-1 bg-cyan-400/50 rounded-full pointer-events-none animate-pulse" />
+      <div className="absolute bottom-[20%] right-[25%] w-1.5 h-1.5 bg-blue-300/40 rounded-full pointer-events-none animate-pulse" style={{ animationDelay: "1s" }} />
+
+      {/* Desktop Icons — 2-col grid, clears the 48px taskbar */}
+      <div
+        className="absolute top-4 left-3 z-10 grid grid-cols-2 gap-1 content-start"
+        style={{ bottom: "56px", overflowY: "auto", overflowX: "hidden", scrollbarWidth: "none" }}
+      >
         {desktopIcons.map((icon) => (
           <DesktopIcon
             key={icon.id}
             icon={icon.icon}
             label={icon.label}
             onClick={() => openWindow(icon.id)}
+            isOpen={activeWindowId === icon.id}
           />
         ))}
       </div>

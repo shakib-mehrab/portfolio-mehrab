@@ -1,51 +1,178 @@
-import { User } from "lucide-react";
-import { ImageWithFallback } from "./figma/ImageWithFallback";
+import { useState, useEffect } from "react";
+import { FolderOpen, Award, Code } from "lucide-react";
+import { motion } from "motion/react";
+import { GlassCard } from "./GlassCard";
+import { profile } from "../../data/profile";
 
-interface WelcomeWindowContentProps {
-  profileImage?: string;
-}
+const LINES: { text: string; gradient?: boolean; className: string }[] = [
+  { text: "Hi There! 👋", className: "text-2xl text-white/75 font-light" },
+  {
+    text: `I am ${profile.name}`,
+    gradient: true,
+    className: "text-4xl font-bold leading-tight",
+  },
+  { text: "A Passionate Developer", className: "text-xl text-blue-200/85" },
+  {
+    text: "A Blockchain Enthusiast and Learner",
+    className: "text-xl text-purple-200/85",
+  },
+  {
+    text: "Welcome To My Portfolio ✨",
+    className: "text-2xl font-semibold text-cyan-200/85",
+  },
+];
 
-export function WelcomeWindowContent({ profileImage }: WelcomeWindowContentProps) {
+const TYPING_SPEED = 42; // ms per character
+const PAUSE_BETWEEN = 380; // ms pause after each line finishes
+
+const STATS = [
+  {
+    icon: <FolderOpen className="w-4 h-4 text-blue-300" />,
+    label: "6 Projects",
+    delay: "0s",
+  },
+  {
+    icon: <Award className="w-4 h-4 text-cyan-300" />,
+    label: "8 Certifications",
+    delay: "0.2s",
+  },
+  {
+    icon: <Code className="w-4 h-4 text-purple-300" />,
+    label: "30+ Skills",
+    delay: "0.4s",
+  },
+];
+
+export function WelcomeWindowContent() {
+  const [lineIndex, setLineIndex] = useState(0);
+  const [charIndex, setCharIndex] = useState(0);
+  const [completedLines, setCompletedLines] = useState<string[]>([]);
+  const [showStats, setShowStats] = useState(false);
+  const [showHint, setShowHint] = useState(false);
+  const [cursorOn, setCursorOn] = useState(true);
+
+  const allDone = lineIndex >= LINES.length;
+
+  // Blinking cursor
+  useEffect(() => {
+    const t = setInterval(() => setCursorOn((v) => !v), 530);
+    return () => clearInterval(t);
+  }, []);
+
+  // Typewriter engine
+  useEffect(() => {
+    if (allDone) {
+      const t1 = setTimeout(() => setShowStats(true), 250);
+      const t2 = setTimeout(() => setShowHint(true), 600);
+      return () => {
+        clearTimeout(t1);
+        clearTimeout(t2);
+      };
+    }
+    const full = LINES[lineIndex].text;
+    if (charIndex < full.length) {
+      const t = setTimeout(() => setCharIndex((c) => c + 1), TYPING_SPEED);
+      return () => clearTimeout(t);
+    } else {
+      // Finished a line — pause then advance
+      const t = setTimeout(() => {
+        setCompletedLines((prev) => [...prev, full]);
+        setLineIndex((l) => l + 1);
+        setCharIndex(0);
+      }, PAUSE_BETWEEN);
+      return () => clearTimeout(t);
+    }
+  }, [lineIndex, charIndex, allDone]);
+
+  const renderText = (
+    text: string,
+    line: (typeof LINES)[0],
+    showCursor: boolean,
+    key: number
+  ) => (
+    <p key={key} className={`leading-snug ${line.className}`}>
+      {line.gradient ? (
+        <span className="inline-block bg-gradient-to-r from-blue-200 via-cyan-200 to-purple-200 bg-clip-text text-transparent">
+          {text}
+        </span>
+      ) : (
+        text
+      )}
+      {showCursor && (
+        <span
+          className="inline-block w-0.5 h-[0.9em] bg-current ml-0.5 align-middle"
+          style={{ opacity: cursorOn ? 1 : 0, transition: "opacity 0.05s" }}
+        />
+      )}
+    </p>
+  );
+
   return (
-    <div className="h-full flex items-center justify-center p-8">
-      <div className="max-w-2xl backdrop-blur-xl bg-white/20 rounded-lg shadow-lg p-8 border border-white/30">
-        <div className="flex items-start gap-6">
-          {/* Profile Image */}
-          <div className="flex-shrink-0">
-            {profileImage ? (
-              <ImageWithFallback
-                src={profileImage}
-                alt="Profile"
-                className="w-32 h-32 rounded-full object-cover border-4 border-white/40 shadow-xl"
-              />
-            ) : (
-              <div className="w-32 h-32 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center border-4 border-white/40 shadow-xl">
-                <User className="w-16 h-16 text-white" />
-              </div>
-            )}
-          </div>
+    <div className="h-full flex flex-col items-center justify-center p-8 gap-7 overflow-auto">
+      {/* Typewriter text block */}
+      <div className="text-center space-y-2.5">
+        {/* Completed lines */}
+        {completedLines.map((text, i) => renderText(text, LINES[i], false, i))}
 
-          {/* Content */}
-          <div className="flex-1">
-            <h1 className="text-4xl font-bold text-white mb-2 drop-shadow-lg">
-              Welcome to My Portfolio
-            </h1>
-            <h2 className="text-xl text-blue-200 mb-4 drop-shadow-md">
-              Full Stack Developer | Blockchain Enthusiast | CSE Student
-            </h2>
-            <p className="text-white/90 leading-relaxed drop-shadow-md">
-              Hello! I'm a passionate computer science student with a keen interest in full-stack
-              development and blockchain technology. I love building innovative solutions that make
-              a difference. This portfolio showcases my journey, projects, and achievements.
-            </p>
-            <p className="text-white/90 leading-relaxed mt-4 drop-shadow-md">
-              Feel free to explore my desktop by double-clicking on any icon to learn more about my
-              education, skills, projects, and achievements. You can also use the Start menu at the
-              bottom left to navigate through different sections.
-            </p>
-          </div>
-        </div>
+        {/* Currently typing line */}
+        {!allDone &&
+          renderText(
+            LINES[lineIndex].text.slice(0, charIndex),
+            LINES[lineIndex],
+            true,
+            lineIndex
+          )}
       </div>
+
+      {/* Stats — appear after all lines done */}
+      {showStats && (
+        <motion.div
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="flex flex-wrap gap-3 justify-center"
+        >
+          {STATS.map((stat, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, scale: 0.82 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.35, delay: i * 0.12 }}
+            >
+              <GlassCard
+                padding="sm"
+                hover
+                className="!rounded-2xl"
+                sweepDelay={stat.delay}
+              >
+                <div className="flex items-center gap-2">
+                  {stat.icon}
+                  <span className="text-white/85 text-sm font-medium">
+                    {stat.label}
+                  </span>
+                </div>
+              </GlassCard>
+            </motion.div>
+          ))}
+        </motion.div>
+      )}
+
+      {/* Explore hint — appears last */}
+      {showHint && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6 }}
+          className="max-w-2xl w-full"
+        >
+          <GlassCard padding="sm" className="!rounded-2xl" sweepDelay="1.5s">
+            <p className="text-white/45 text-sm text-center">
+              Double-click any desktop icon or use the Start menu to explore my
+              portfolio sections.
+            </p>
+          </GlassCard>
+        </motion.div>
+      )}
     </div>
   );
 }

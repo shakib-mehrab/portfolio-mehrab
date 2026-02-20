@@ -1,5 +1,8 @@
 import { useState } from "react";
-import { Mail, Phone, MapPin, Linkedin, Github, Send } from "lucide-react";
+import { Mail, MapPin, Linkedin, Github, Twitter, Instagram, Send } from "lucide-react";
+import { motion } from "motion/react";
+import { GlassCard } from "./GlassCard";
+import { profile } from "../../data/profile";
 
 export function ContactWindowContent() {
   const [formData, setFormData] = useState({
@@ -11,7 +14,6 @@ export function ContactWindowContent() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission
     alert("Thank you for your message! I'll get back to you soon.");
     setFormData({ name: "", email: "", subject: "", message: "" });
   };
@@ -19,163 +21,161 @@ export function ContactWindowContent() {
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+
+  const inputClass =
+    "w-full px-4 py-3 backdrop-blur-md bg-white/[0.08] border border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400/50 text-white placeholder-white/30 text-sm transition-all hover:border-white/20";
 
   return (
     <div className="p-6 overflow-auto h-full">
-      <div className="max-w-5xl mx-auto">
-        <div className="backdrop-blur-xl bg-gradient-to-r from-blue-500/30 to-cyan-500/30 text-white rounded-lg p-6 shadow-lg mb-6 border border-white/30">
-          <div className="flex items-center gap-3 mb-2">
-            <Mail className="w-8 h-8" />
-            <h2 className="text-3xl font-bold drop-shadow-lg">Contact Me</h2>
+      <div className="max-w-5xl mx-auto space-y-6">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: -16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="text-center"
+        >
+          <div className="flex items-center justify-center gap-3 mb-1">
+            <Mail className="w-7 h-7 text-blue-300" />
+            <h2 className="text-4xl font-bold inline-block bg-gradient-to-r from-blue-200 via-cyan-200 to-purple-200 bg-clip-text text-transparent">
+              Contact Me
+            </h2>
           </div>
-          <p className="text-blue-100 drop-shadow-md">Let's connect and discuss opportunities</p>
-        </div>
+          <div className="mt-2 mx-auto h-0.5 w-24 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full" />
+          <p className="text-white/50 text-sm mt-2">Let's connect and discuss opportunities</p>
+        </motion.div>
 
         <div className="grid md:grid-cols-5 gap-6">
-          {/* Contact Information */}
-          <div className="md:col-span-2 space-y-4">
-            <div className="backdrop-blur-xl bg-white/20 rounded-lg shadow-md p-6 border border-white/30">
-              <h3 className="text-xl font-semibold text-white mb-4 drop-shadow-md">
-                Get In Touch
-              </h3>
-
+          {/* Contact Info */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, delay: 0.15 }}
+            className="md:col-span-2 space-y-4"
+          >
+            <GlassCard hover sweepDelay="0.4s">
+              <h3 className="text-lg font-semibold text-white mb-4">Get In Touch</h3>
               <div className="space-y-4">
-                <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 backdrop-blur-md bg-blue-500/30 rounded-lg flex items-center justify-center flex-shrink-0 border border-white/30">
-                    <Mail className="w-5 h-5 text-blue-200" />
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center flex-shrink-0 shadow-lg">
+                    <Mail className="w-5 h-5 text-white" />
                   </div>
                   <div>
-                    <p className="text-sm text-white/70">Email</p>
-                    <p className="font-medium text-white drop-shadow-sm">john.doe@email.com</p>
+                    <p className="text-xs text-white/50">Email</p>
+                    <p className="text-white text-sm font-medium">{profile.email}</p>
                   </div>
                 </div>
-
-                <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 backdrop-blur-md bg-green-500/30 rounded-lg flex items-center justify-center flex-shrink-0 border border-white/30">
-                    <Phone className="w-5 h-5 text-green-200" />
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center flex-shrink-0 shadow-lg">
+                    <MapPin className="w-5 h-5 text-white" />
                   </div>
                   <div>
-                    <p className="text-sm text-white/70">Phone</p>
-                    <p className="font-medium text-white drop-shadow-sm">+1 (555) 123-4567</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 backdrop-blur-md bg-purple-500/30 rounded-lg flex items-center justify-center flex-shrink-0 border border-white/30">
-                    <MapPin className="w-5 h-5 text-purple-200" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-white/70">Location</p>
-                    <p className="font-medium text-white drop-shadow-sm">
-                      San Francisco, CA
-                    </p>
+                    <p className="text-xs text-white/50">Location</p>
+                    <p className="text-white text-sm font-medium">{profile.location}</p>
                   </div>
                 </div>
               </div>
 
-              <div className="mt-6 pt-6 border-t border-white/20">
-                <h4 className="font-semibold text-white mb-3 drop-shadow-sm">Social Media</h4>
-                <div className="flex gap-3">
-                  <a
-                    href="#"
-                    className="w-10 h-10 backdrop-blur-md bg-blue-500/40 text-white rounded-lg flex items-center justify-center hover:bg-blue-500/60 transition-colors border border-white/30"
-                  >
-                    <Linkedin className="w-5 h-5" />
-                  </a>
-                  <a
-                    href="#"
-                    className="w-10 h-10 backdrop-blur-md bg-gray-700/40 text-white rounded-lg flex items-center justify-center hover:bg-gray-700/60 transition-colors border border-white/30"
-                  >
-                    <Github className="w-5 h-5" />
-                  </a>
+              <div className="mt-5 pt-5 border-t border-white/10">
+                <h4 className="text-sm font-medium text-white/70 mb-3">Social Media</h4>
+                <div className="flex gap-2">
+                  {[
+                    { href: profile.social.github, icon: <Github className="w-4 h-4" /> },
+                    { href: profile.social.linkedin, icon: <Linkedin className="w-4 h-4" /> },
+                    { href: profile.social.twitter, icon: <Twitter className="w-4 h-4" /> },
+                    { href: profile.social.instagram, icon: <Instagram className="w-4 h-4" /> },
+                  ].map((s, i) => (
+                    <motion.a
+                      key={i}
+                      href={s.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      whileHover={{ scale: 1.1, y: -2 }}
+                      whileTap={{ scale: 0.95 }}
+                      transition={{ type: "spring", stiffness: 350, damping: 20 }}
+                      className="w-9 h-9 bg-white/[0.08] border border-white/10 rounded-xl flex items-center justify-center text-white/60 hover:text-white hover:bg-white/[0.15] hover:border-white/20 transition-colors duration-200"
+                    >
+                      {s.icon}
+                    </motion.a>
+                  ))}
                 </div>
               </div>
-            </div>
-          </div>
+            </GlassCard>
+          </motion.div>
 
           {/* Contact Form */}
-          <div className="md:col-span-3">
-            <div className="backdrop-blur-xl bg-white/20 rounded-lg shadow-md p-6 border border-white/30">
-              <h3 className="text-xl font-semibold text-white mb-4 drop-shadow-md">
-                Send Me a Message
-              </h3>
-
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="md:col-span-3"
+          >
+            <GlassCard glow hover sweepDelay="1.0s">
+              <h3 className="text-lg font-semibold text-white mb-5">Send Me a Message</h3>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-white/90 mb-1 drop-shadow-sm">
-                    Your Name
-                  </label>
+                  <label className="block text-xs font-medium text-white/60 mb-1.5">Your Name</label>
                   <input
                     type="text"
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className="w-full px-3 py-2 backdrop-blur-md bg-white/20 border border-white/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent text-white placeholder-white/50"
-                    placeholder="John Doe"
+                    className={inputClass}
+                    placeholder="Mehrab Hossain"
                   />
                 </div>
-
                 <div>
-                  <label className="block text-sm font-medium text-white/90 mb-1 drop-shadow-sm">
-                    Your Email
-                  </label>
+                  <label className="block text-xs font-medium text-white/60 mb-1.5">Your Email</label>
                   <input
                     type="email"
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full px-3 py-2 backdrop-blur-md bg-white/20 border border-white/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent text-white placeholder-white/50"
-                    placeholder="john@example.com"
+                    className={inputClass}
+                    placeholder="you@example.com"
                   />
                 </div>
-
                 <div>
-                  <label className="block text-sm font-medium text-white/90 mb-1 drop-shadow-sm">
-                    Subject
-                  </label>
+                  <label className="block text-xs font-medium text-white/60 mb-1.5">Subject</label>
                   <input
                     type="text"
                     name="subject"
                     value={formData.subject}
                     onChange={handleChange}
                     required
-                    className="w-full px-3 py-2 backdrop-blur-md bg-white/20 border border-white/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent text-white placeholder-white/50"
+                    className={inputClass}
                     placeholder="Project Inquiry"
                   />
                 </div>
-
                 <div>
-                  <label className="block text-sm font-medium text-white/90 mb-1 drop-shadow-sm">
-                    Message
-                  </label>
+                  <label className="block text-xs font-medium text-white/60 mb-1.5">Message</label>
                   <textarea
                     name="message"
                     value={formData.message}
                     onChange={handleChange}
                     required
-                    rows={6}
-                    className="w-full px-3 py-2 backdrop-blur-md bg-white/20 border border-white/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent resize-none text-white placeholder-white/50"
+                    rows={5}
+                    className={`${inputClass} resize-none`}
                     placeholder="Tell me about your project or inquiry..."
                   />
                 </div>
-
-                <button
+                <motion.button
                   type="submit"
-                  className="w-full backdrop-blur-md bg-blue-500/40 text-white py-3 rounded-lg font-semibold hover:bg-blue-500/60 transition-colors flex items-center justify-center gap-2 border border-white/30"
+                  whileHover={{ scale: 1.02, boxShadow: "0 0 20px rgba(59,130,246,0.4)" }}
+                  whileTap={{ scale: 0.98 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                  className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white py-3 rounded-xl font-semibold flex items-center justify-center gap-2 transition-colors duration-200"
                 >
-                  <Send className="w-5 h-5" />
+                  <Send className="w-4 h-4" />
                   Send Message
-                </button>
+                </motion.button>
               </form>
-            </div>
-          </div>
+            </GlassCard>
+          </motion.div>
         </div>
       </div>
     </div>
