@@ -48,29 +48,15 @@ export function Taskbar({
         onMenuItemClick={onStartMenuItemClick}
       />
 
-      <div
-        className="fixed bottom-0 left-0 right-0 h-12 flex items-center px-2 z-40"
-        style={{
-          background:
-            "linear-gradient(to bottom, rgba(35, 82, 124, 0.95), rgba(20, 50, 76, 0.95))",
-          backdropFilter: "blur(20px)",
-          borderTop: "1px solid rgba(255, 255, 255, 0.1)",
-          boxShadow: "0 -2px 10px rgba(0, 0, 0, 0.3)",
-        }}
-      >
+      <div className="fixed bottom-0 left-0 right-0 h-12 flex items-center px-2 z-40 bg-taskbar">
         {/* Start Button */}
         <button
           onClick={() => setIsStartMenuOpen(!isStartMenuOpen)}
           className={`h-9 px-4 mr-2 rounded flex items-center gap-2 font-semibold text-sm transition-all ${
             isStartMenuOpen
-              ? "bg-[rgba(20,50,76,0.9)] shadow-inner"
-              : "bg-gradient-to-b from-[rgba(69,156,215,0.9)] to-[rgba(41,127,184,0.9)] hover:from-[rgba(89,176,235,0.9)] hover:to-[rgba(61,147,204,0.9)] shadow-lg"
+              ? "bg-[rgba(20,50,76,0.9)] shadow-inner border-start-btn-active"
+              : "bg-gradient-to-b from-[rgba(69,156,215,0.9)] to-[rgba(41,127,184,0.9)] hover:from-[rgba(89,176,235,0.9)] hover:to-[rgba(61,147,204,0.9)] shadow-lg border-start-btn"
           }`}
-          style={{
-            border: isStartMenuOpen
-              ? "1px solid rgba(0,0,0,0.3)"
-              : "1px solid rgba(255,255,255,0.3)",
-          }}
         >
           <div className="w-6 h-6 rounded-full bg-gradient-to-br from-blue-400 via-blue-500 to-blue-600 flex items-center justify-center shadow-lg">
             <div className="w-4 h-4 bg-white/90 rounded-full flex items-center justify-center">
@@ -102,10 +88,10 @@ export function Taskbar({
 
         {/* System Tray */}
         <div className="flex items-center gap-2 ml-2 px-3 h-9 bg-[rgba(20,50,76,0.6)] rounded border border-white/10">
-          <button className="p-1 hover:bg-white/10 rounded transition-colors">
+          <button aria-label="Volume control" className="p-1 hover:bg-white/10 rounded transition-colors">
             <Volume2 className="w-4 h-4 text-white" />
           </button>
-          <button className="p-1 hover:bg-white/10 rounded transition-colors">
+          <button aria-label="Network status" className="p-1 hover:bg-white/10 rounded transition-colors">
             <Wifi className="w-4 h-4 text-white" />
           </button>
 

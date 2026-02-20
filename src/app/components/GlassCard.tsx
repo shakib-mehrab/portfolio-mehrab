@@ -47,16 +47,12 @@ export function GlassCard({
       {children}
 
       {/* Light sweep — rendered last so it floats above content via blend */}
+      {/* Note: Dynamic animation delay requires inline style - this is intentional */}
+      {/* eslint-disable-next-line no-inline-styles */}
       <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          animationName: "sweep",
-          animationDuration: "6s",
-          animationTimingFunction: "ease-in-out",
-          animationIterationCount: "infinite",
-          animationDelay: sweepDelay,
-          mixBlendMode: "screen",
-        }}
+        className="absolute inset-0 pointer-events-none animate-sweep"
+        data-delay={sweepDelay}
+        style={{ animationDelay: sweepDelay }}
       >
         <div className="absolute inset-y-0 w-1/2 bg-gradient-to-r from-transparent via-white/[0.11] to-transparent" />
       </div>

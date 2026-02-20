@@ -311,36 +311,20 @@ export default function App() {
   };
 
   return (
-    <div
-      className="w-full h-screen relative overflow-hidden"
-      style={{
-        background:
-          "radial-gradient(ellipse at 30% 20%, #0c1a3a 0%, #0a0a1e 35%, #060412 65%, #020617 100%)",
-      }}
-    >
+    <div className="w-full h-screen relative overflow-hidden bg-desktop">
       {/* Ambient gradient overlay */}
-      <div
-        className="absolute inset-0 opacity-40"
-        style={{
-          background:
-            "radial-gradient(circle at 15% 40%, rgba(59, 130, 246, 0.18) 0%, transparent 55%), radial-gradient(circle at 85% 70%, rgba(139, 92, 246, 0.15) 0%, transparent 55%), radial-gradient(circle at 50% 10%, rgba(6, 182, 212, 0.10) 0%, transparent 45%)",
-          filter: "blur(40px)",
-        }}
-      />
+      <div className="absolute inset-0 opacity-40 bg-ambient-overlay" />
 
       {/* Decorative floating elements — reference_style inspired */}
-      <div className="absolute top-1/4 right-[12%] w-56 h-56 border border-blue-500/10 rounded-full pointer-events-none" style={{ animationName: "orbit", animationDuration: "40s", animationTimingFunction: "linear", animationIterationCount: "infinite" }} />
+      <div className="absolute top-1/4 right-[12%] w-56 h-56 border border-blue-500/10 rounded-full pointer-events-none animate-orbit" />
       <div className="absolute bottom-1/3 left-[30%] w-36 h-36 border border-purple-500/10 rounded-lg rotate-12 pointer-events-none" />
-      <div className="absolute top-[12%] right-[35%] w-2 h-2 bg-blue-400/60 rounded-full pointer-events-none" style={{ animationName: "float", animationDuration: "6s", animationTimingFunction: "ease-in-out", animationIterationCount: "infinite" }} />
-      <div className="absolute top-[60%] right-[8%] w-1.5 h-1.5 bg-purple-400/60 rounded-full pointer-events-none" style={{ animationName: "float", animationDuration: "8s", animationTimingFunction: "ease-in-out", animationIterationCount: "infinite", animationDelay: "2s" }} />
+      <div className="absolute top-[12%] right-[35%] w-2 h-2 bg-blue-400/60 rounded-full pointer-events-none animate-float" />
+      <div className="absolute top-[60%] right-[8%] w-1.5 h-1.5 bg-purple-400/60 rounded-full pointer-events-none animate-float-slow" />
       <div className="absolute top-[35%] left-[40%] w-1 h-1 bg-cyan-400/50 rounded-full pointer-events-none animate-pulse" />
-      <div className="absolute bottom-[20%] right-[25%] w-1.5 h-1.5 bg-blue-300/40 rounded-full pointer-events-none animate-pulse" style={{ animationDelay: "1s" }} />
+      <div className="absolute bottom-[20%] right-[25%] w-1.5 h-1.5 bg-blue-300/40 rounded-full pointer-events-none animate-pulse delay-pulse-1s" />
 
       {/* Desktop Icons — 2-col grid, clears the 48px taskbar */}
-      <div
-        className="absolute top-4 left-3 z-10 grid grid-cols-2 gap-1 content-start"
-        style={{ bottom: "56px", overflowY: "auto", overflowX: "hidden", scrollbarWidth: "none" }}
-      >
+      <div className="absolute top-4 left-3 z-10 grid grid-cols-2 gap-1 content-start overflow-y-auto overflow-x-hidden scrollbar-none desktop-icons-grid">
         {desktopIcons.map((icon) => (
           <DesktopIcon
             key={icon.id}

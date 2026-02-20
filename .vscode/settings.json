@@ -1,0 +1,20 @@
+{
+  "css.lint.compatibleVendorPrefixes": "ignore",
+  "css.lint.vendorPrefix": "ignore",
+  "css.lint.unknownProperties": "ignore",
+  "css.lint.propertyIgnoredDueToDisplay": "ignore",
+  "css.validate": false,
+  "less.validate": false,
+  "scss.validate": false,
+  "stylelint.enable": false,
+  "[css]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.codeActionsOnSave": {}
+  },
+  "[typescript]": {
+    "editor.codeActionsOnSave": {}
+  },
+  "[typescriptreact]": {
+    "editor.codeActionsOnSave": {}
+  }
+}

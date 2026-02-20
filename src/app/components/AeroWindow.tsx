@@ -127,6 +127,7 @@ export function AeroWindow({
               e.stopPropagation();
               onMinimize?.();
             }}
+            aria-label="Minimize window"
             className="w-7 h-6 flex items-center justify-center rounded hover:bg-white/20 transition-colors group"
           >
             <div className="w-5 h-5 flex items-center justify-center bg-gradient-to-b from-white/90 to-white/70 rounded shadow-sm group-hover:from-white group-hover:to-white/80">
@@ -140,6 +141,7 @@ export function AeroWindow({
               e.stopPropagation();
               onMaximize?.();
             }}
+            aria-label="Maximize window"
             className="w-7 h-6 flex items-center justify-center rounded hover:bg-white/20 transition-colors group"
           >
             <div className="w-5 h-5 flex items-center justify-center bg-gradient-to-b from-white/90 to-white/70 rounded shadow-sm group-hover:from-white group-hover:to-white/80">
@@ -153,6 +155,7 @@ export function AeroWindow({
               e.stopPropagation();
               onClose?.();
             }}
+            aria-label="Close window"
             className="w-7 h-6 flex items-center justify-center rounded hover:bg-red-500/80 transition-colors group"
           >
             <div className="w-5 h-5 flex items-center justify-center bg-gradient-to-b from-red-400 to-red-500 rounded shadow-sm group-hover:from-red-500 group-hover:to-red-600">
@@ -163,7 +166,7 @@ export function AeroWindow({
       </div>
 
       {/* Window Content */}
-      <div className="h-[calc(100%-2rem)] overflow-auto backdrop-blur-2xl bg-black/[0.70] border-t border-white/10" style={{ scrollbarWidth: "thin", scrollbarColor: "rgba(59,130,246,0.25) transparent" }}>
+      <div className="h-[calc(100%-2rem)] overflow-auto backdrop-blur-2xl bg-black/[0.70] border-t border-white/10 scrollbar-thin">
         {children}
       </div>
     </motion.div>

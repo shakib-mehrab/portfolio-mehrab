@@ -12,4 +12,20 @@
  *
  * Otherwise, you can leave this file empty.
  */
-export default {}
+import autoprefixer from 'autoprefixer'
+
+export default {
+  plugins: [
+    autoprefixer({
+      overrideBrowserslist: [
+        'last 2 versions',
+        '> 1%',
+        'iOS >= 9',
+        'Safari >= 9',
+        'Chrome >= 54',
+        'Firefox ESR',
+        'not dead'
+      ]
+    })
+  ]
+}

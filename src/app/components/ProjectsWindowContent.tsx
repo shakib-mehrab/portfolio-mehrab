@@ -52,11 +52,14 @@ export function ProjectsWindowContent() {
                         className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-110"
                         onError={(e) => {
                           (e.currentTarget as HTMLImageElement).style.display = "none";
-                          (e.currentTarget.nextElementSibling as HTMLElement | null)?.classList.remove("hidden");
+                          const fallback = e.currentTarget.nextElementSibling as HTMLElement | null;
+                          if (fallback) {
+                            fallback.style.display = "flex";
+                          }
                         }}
                       />
                       {/* Gradient fallback shown if image errors */}
-                      <div className="hidden absolute inset-0 bg-gradient-to-br from-blue-500/25 to-purple-500/25 flex items-center justify-center">
+                      <div className="absolute inset-0 bg-gradient-to-br from-blue-500/25 to-purple-500/25 items-center justify-center display-none-initial">
                         <Code2 className="w-12 h-12 text-white/[0.15]" />
                       </div>
                     </>

@@ -52,12 +52,7 @@ export function DesktopIcon({ icon, label, onClick, isOpen = false }: DesktopIco
         </div>
       </div>
 
-      <span
-        className="text-[11px] text-white text-center leading-tight font-medium break-words max-w-full px-0.5"
-        style={{
-          textShadow: "0 1px 4px rgba(0,0,0,1), 0 0 12px rgba(0,0,0,0.8)",
-        }}
-      >
+      <span className="text-[11px] text-white text-center leading-tight font-medium break-words max-w-full px-0.5 text-shadow-desktop-icon">
         {label}
       </span>
     </motion.button>

@@ -100,8 +100,7 @@ export function WelcomeWindowContent() {
       )}
       {showCursor && (
         <span
-          className="inline-block w-0.5 h-[0.9em] bg-current ml-0.5 align-middle"
-          style={{ opacity: cursorOn ? 1 : 0, transition: "opacity 0.05s" }}
+          className={`inline-block w-0.5 h-[0.9em] bg-current ml-0.5 align-middle cursor-blink ${cursorOn ? "cursor-visible" : "cursor-hidden"}`}
         />
       )}
     </p>
