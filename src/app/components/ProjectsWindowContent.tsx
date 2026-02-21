@@ -1,10 +1,7 @@
 import { useState } from "react";
 import { ExternalLink, Github, Code2, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
-import { GlassCard } from "./GlassCard";
 import { projects, learningProjects } from "../../data/projects";
-
-const DELAYS = ["0s", "0.4s", "0.8s", "1.2s", "1.6s", "2.0s"];
 
 function ProjectCard({ project, index }: { project: typeof projects[0]; index: number }) {
   const [showAllTech, setShowAllTech] = useState(false);
@@ -20,57 +17,63 @@ function ProjectCard({ project, index }: { project: typeof projects[0]; index: n
       initial={{ opacity: 0, y: 28 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.45, delay: index * 0.08, ease: "easeOut" }}
-      className="flex flex-col"
+      className="flex flex-col group"
     >
-      <GlassCard
-        padding="none"
-        hover
-        sweepDelay={DELAYS[index % DELAYS.length]}
-        className="flex flex-col flex-1"
-      >
-        {/* Banner: project screenshot if available, else gradient */}
-        <div className="relative h-32 overflow-hidden rounded-t-3xl flex-shrink-0">
-          {project.image ? (
-            <>
-              <img
-                src={project.image}
-                alt={project.title}
-                className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-110"
-                onError={(e) => {
-                  (e.currentTarget as HTMLImageElement).style.display = "none";
-                  const fallback = e.currentTarget.nextElementSibling as HTMLElement | null;
-                  if (fallback) {
-                    fallback.style.display = "flex";
-                  }
-                }}
-              />
-              {/* Gradient fallback shown if image errors */}
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/25 to-purple-500/25 items-center justify-center display-none-initial">
-                <Code2 className="w-12 h-12 text-white/[0.15]" />
-              </div>
-            </>
-          ) : (
-            <div className="w-full h-full bg-gradient-to-br from-blue-500/25 to-purple-500/25 flex items-center justify-center">
-              <Code2 className="w-12 h-12 text-white/[0.15]" />
-            </div>
-          )}
-          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-400/40 to-transparent pointer-events-none" />
-          <span className="absolute top-3 right-3 px-2 py-0.5 rounded-full text-xs bg-black/30 border border-white/10 text-white/60">
-            {project.category}
-          </span>
+      {/* Glassmorphism Card with full background image */}
+      <div className="relative h-[420px] rounded-3xl overflow-hidden shadow-xl shadow-blue-500/10 hover:shadow-2xl hover:shadow-blue-500/30 transition-all duration-500 hover:-translate-y-2">
+        {/* Glowing Border Effect */}
+        <div className="absolute inset-0 rounded-3xl p-[1px] bg-gradient-to-br from-blue-400/40 via-purple-400/40 to-cyan-400/40 group-hover:from-blue-400/60 group-hover:via-purple-400/60 group-hover:to-cyan-400/60 transition-all duration-500 animate-pulse-slow">
+          <div className="absolute inset-0 rounded-3xl bg-black/20 backdrop-blur-sm" />
         </div>
 
-        {/* Content */}
-        <div className="p-5 flex flex-col flex-1">
-          <h3 className="text-lg font-bold text-white mb-2 font-bangla">{project.title}</h3>
+        {/* Background Image */}
+        {project.image ? (
+          <img
+            src={project.image}
+            alt={project.title}
+            className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+            onError={(e) => {
+              (e.currentTarget as HTMLImageElement).style.display = "none";
+            }}
+          />
+        ) : (
+          <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-blue-500/30 via-purple-500/30 to-cyan-500/30" />
+        )}
+        
+        {/* Gradient Overlay - Dark at bottom for text readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/20 to-black/80 transition-opacity duration-500 group-hover:via-black/30 group-hover:to-black/85" />
+        
+        {/* Continuous Light Sweep Animation - Always active */}
+        <div 
+          className="absolute inset-0 opacity-30 group-hover:opacity-50 transition-opacity duration-500"
+          style={{
+            animation: 'sweep 4s linear infinite',
+            background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.05) 40%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.05) 60%, transparent 100%)',
+            backgroundSize: '200% 100%',
+          }}
+        />
+        
+        {/* Category Badge - Top Right */}
+        <div className="absolute top-4 right-4 px-3 py-1.5 rounded-full text-xs font-medium bg-black/40 backdrop-blur-md border border-white/20 text-white shadow-lg transition-all duration-300 group-hover:bg-black/60 group-hover:border-white/30">
+          {project.category}
+        </div>
+
+        {/* Frosted Glass Content Area - Bottom */}
+        <div className="absolute bottom-0 left-0 right-0 p-6 backdrop-blur-xl bg-gradient-to-t from-black/60 via-black/40 to-transparent border-t border-white/10 transition-all duration-500 group-hover:backdrop-blur-2xl group-hover:from-black/70 group-hover:via-black/50">
+          {/* Title */}
+          <h3 className="text-xl font-bold text-white mb-2 font-bangla drop-shadow-lg transition-all duration-300 group-hover:text-blue-100">
+            {project.title}
+          </h3>
+          
+          {/* Description */}
           <div className="mb-3">
-            <p className={`text-white/65 text-sm leading-relaxed ${!showFullDescription && isLongDescription ? 'line-clamp-3' : ''}`}>
+            <p className={`text-white/90 text-sm leading-relaxed drop-shadow transition-all duration-300 group-hover:text-white ${!showFullDescription && isLongDescription ? 'line-clamp-2' : ''}`}>
               {project.description}
             </p>
             {isLongDescription && (
               <button
                 onClick={() => setShowFullDescription(!showFullDescription)}
-                className="text-xs text-blue-300/70 hover:text-blue-200 transition-colors duration-200 mt-1"
+                className="text-xs text-blue-300 hover:text-blue-200 transition-colors duration-200 mt-1 font-medium"
               >
                 {showFullDescription ? "Show Less" : "See More"}
               </button>
@@ -78,17 +81,17 @@ function ProjectCard({ project, index }: { project: typeof projects[0]; index: n
           </div>
 
           {/* Tech Pills */}
-          <div className="mb-3">
+          <div className="mb-4">
             <div className="flex flex-wrap gap-1.5">
               <AnimatePresence mode="popLayout">
-                {visibleTech.map((tech, i) => (
+                {visibleTech.map((tech) => (
                   <motion.span
                     key={tech}
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.8 }}
                     transition={{ duration: 0.2 }}
-                    className="px-2 py-0.5 rounded-full bg-white/[0.07] border border-white/[0.12] text-xs text-white/65 hover:text-white hover:border-white/25 transition-colors duration-200"
+                    className="px-2.5 py-1 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-xs text-white font-medium hover:bg-white/20 hover:border-white/30 transition-all duration-200"
                   >
                     {tech}
                   </motion.span>
@@ -98,7 +101,7 @@ function ProjectCard({ project, index }: { project: typeof projects[0]; index: n
             {hasMoreTech && (
               <button
                 onClick={() => setShowAllTech(!showAllTech)}
-                className="flex items-center gap-1 text-xs text-blue-300/70 hover:text-blue-200 transition-colors duration-200 mt-2"
+                className="flex items-center gap-1 text-xs text-blue-300 hover:text-blue-200 transition-colors duration-200 mt-2 font-medium"
               >
                 <motion.span
                   animate={{ rotate: showAllTech ? 180 : 0 }}
@@ -112,29 +115,58 @@ function ProjectCard({ project, index }: { project: typeof projects[0]; index: n
             )}
           </div>
 
-          {/* Action Buttons */}
-          <div className="flex gap-2">
+          {/* Action Buttons with Frosted Glass */}
+          <div className="flex gap-3">
             {project.githubUrl && (
               <a
                 href={project.githubUrl}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-white/[0.07] border border-white/[0.10] text-white/65 text-xs rounded-xl hover:bg-white/[0.14] hover:text-white hover:border-white/20 transition-all duration-200"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-white/10 backdrop-blur-md border border-white/20 text-white text-sm font-medium rounded-xl hover:bg-white/20 hover:border-white/30 hover:shadow-lg hover:scale-105 transition-all duration-300"
               >
-                <Github className="w-3 h-3" />
+                <Github className="w-4 h-4" />
                 GitHub
               </a>
             )}
-            {project.liveUrl && (
+            {project.liveUrl && project.liveUrl !== "#" && (
               <a
                 href={project.liveUrl}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-blue-500/30 to-cyan-500/30 border border-blue-400/20 text-white/90 text-xs rounded-xl hover:from-blue-500/50 hover:to-cyan-500/50 hover:shadow-[0_0_14px_rgba(59,130,246,0.3)] transition-all duration-200"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-blue-500/80 to-cyan-500/80 backdrop-blur-md border border-blue-400/50 text-white text-sm font-medium rounded-xl hover:from-blue-500 hover:to-cyan-500 hover:shadow-[0_0_20px_rgba(59,130,246,0.5)] hover:scale-105 transition-all duration-300"
               >
-                <ExternalLink className="w-3 h-3" />
+                <ExternalLink className="w-4 h-4" />
                 Live Demo
               </a>
             )}
           </div>
         </div>
-      </GlassCard>
+
+        {/* CSS for animations */}
+        <style>{`
+          @keyframes sweep {
+            0% {
+              background-position: -200% 0;
+            }
+            100% {
+              background-position: 200% 0;
+            }
+          }
+          
+          @keyframes pulse-slow {
+            0%, 100% {
+              opacity: 0.6;
+            }
+            50% {
+              opacity: 1;
+            }
+          }
+          
+          .animate-pulse-slow {
+            animation: pulse-slow 3s ease-in-out infinite;
+          }
+        `}</style>
+      </div>
     </motion.div>
   );
 }
