@@ -1,17 +1,7 @@
-import { useState } from "react";
+import { useState, lazy, Suspense } from "react";
 import { AeroWindow } from "./components/AeroWindow";
 import { DesktopIcon } from "./components/DesktopIcon";
 import { Taskbar } from "./components/Taskbar";
-import { WelcomeWindowContent } from "./components/WelcomeWindowContent";
-import { AboutWindowContent } from "./components/AboutWindowContent";
-import { EducationWindowContent } from "./components/EducationWindowContent";
-import { SkillsWindowContent } from "./components/SkillsWindowContent";
-import { ProjectsWindowContent } from "./components/ProjectsWindowContent";
-import { AchievementsWindowContent } from "./components/AchievementsWindowContent";
-import { CoCurricularsWindowContent } from "./components/CoCurricularsWindowContent";
-import { ContactWindowContent } from "./components/ContactWindowContent";
-import { ExperienceWindowContent } from "./components/ExperienceWindowContent";
-import { AwardsWindowContent } from "./components/AwardsWindowContent";
 import {
   User,
   GraduationCap,
@@ -25,6 +15,28 @@ import {
   UserCheck,
   Medal,
 } from "lucide-react";
+
+// Lazy load window content components for better performance
+const WelcomeWindowContent = lazy(() => import("./components/WelcomeWindowContent").then(m => ({ default: m.WelcomeWindowContent })));
+const AboutWindowContent = lazy(() => import("./components/AboutWindowContent").then(m => ({ default: m.AboutWindowContent })));
+const EducationWindowContent = lazy(() => import("./components/EducationWindowContent").then(m => ({ default: m.EducationWindowContent })));
+const SkillsWindowContent = lazy(() => import("./components/SkillsWindowContent").then(m => ({ default: m.SkillsWindowContent })));
+const ProjectsWindowContent = lazy(() => import("./components/ProjectsWindowContent").then(m => ({ default: m.ProjectsWindowContent })));
+const AchievementsWindowContent = lazy(() => import("./components/AchievementsWindowContent").then(m => ({ default: m.AchievementsWindowContent })));
+const CoCurricularsWindowContent = lazy(() => import("./components/CoCurricularsWindowContent").then(m => ({ default: m.CoCurricularsWindowContent })));
+const ContactWindowContent = lazy(() => import("./components/ContactWindowContent").then(m => ({ default: m.ContactWindowContent })));
+const ExperienceWindowContent = lazy(() => import("./components/ExperienceWindowContent").then(m => ({ default: m.ExperienceWindowContent })));
+const AwardsWindowContent = lazy(() => import("./components/AwardsWindowContent").then(m => ({ default: m.AwardsWindowContent })));
+
+// Loading component for lazy-loaded content
+const WindowContentLoader = () => (
+  <div className="flex items-center justify-center h-full">
+    <div className="text-center">
+      <div className="w-12 h-12 border-4 border-white/20 border-t-white/80 rounded-full animate-spin mx-auto mb-3"></div>
+      <p className="text-white/60 text-sm">Loading...</p>
+    </div>
+  </div>
+);
 
 function getCenterPosition(width: number, height: number) {
   return {
@@ -50,7 +62,7 @@ export default function App() {
       id: "welcome",
       title: "Welcome",
       icon: <User className="w-4 h-4" />,
-      content: <WelcomeWindowContent />,
+      content: <Suspense fallback={<WindowContentLoader />}><WelcomeWindowContent /></Suspense>,
       position: getCenterPosition(800, 500),
       size: { width: 800, height: 500 },
       isMaximized: false,
@@ -174,7 +186,7 @@ export default function App() {
       about: {
         title: "About Me",
         icon: <User className="w-4 h-4" />,
-        content: <AboutWindowContent />,
+        content: <Suspense fallback={<WindowContentLoader />}><AboutWindowContent /></Suspense>,
         position: { x: 150, y: 80 },
         size: { width: 900, height: 600 },
         isMaximized: false,
@@ -183,7 +195,7 @@ export default function App() {
       education: {
         title: "Education",
         icon: <GraduationCap className="w-4 h-4" />,
-        content: <EducationWindowContent />,
+        content: <Suspense fallback={<WindowContentLoader />}><EducationWindowContent /></Suspense>,
         position: { x: 200, y: 100 },
         size: { width: 850, height: 600 },
         isMaximized: false,
@@ -192,7 +204,7 @@ export default function App() {
       skills: {
         title: "Skills",
         icon: <Code className="w-4 h-4" />,
-        content: <SkillsWindowContent />,
+        content: <Suspense fallback={<WindowContentLoader />}><SkillsWindowContent /></Suspense>,
         position: { x: 180, y: 90 },
         size: { width: 1000, height: 650 },
         isMaximized: false,
@@ -201,7 +213,7 @@ export default function App() {
       projects: {
         title: "Projects",
         icon: <Briefcase className="w-4 h-4" />,
-        content: <ProjectsWindowContent />,
+        content: <Suspense fallback={<WindowContentLoader />}><ProjectsWindowContent /></Suspense>,
         position: { x: 160, y: 70 },
         size: { width: 1100, height: 700 },
         isMaximized: false,
@@ -210,7 +222,7 @@ export default function App() {
       achievements: {
         title: "Achievements",
         icon: <Trophy className="w-4 h-4" />,
-        content: <AchievementsWindowContent />,
+        content: <Suspense fallback={<WindowContentLoader />}><AchievementsWindowContent /></Suspense>,
         position: { x: 220, y: 110 },
         size: { width: 900, height: 600 },
         isMaximized: false,
@@ -219,7 +231,7 @@ export default function App() {
       cocurriculars: {
         title: "Co-Curricular Activities",
         icon: <Award className="w-4 h-4" />,
-        content: <CoCurricularsWindowContent />,
+        content: <Suspense fallback={<WindowContentLoader />}><CoCurricularsWindowContent /></Suspense>,
         position: { x: 190, y: 95 },
         size: { width: 900, height: 600 },
         isMaximized: false,
@@ -228,7 +240,7 @@ export default function App() {
       contact: {
         title: "Contact Me",
         icon: <Mail className="w-4 h-4" />,
-        content: <ContactWindowContent />,
+        content: <Suspense fallback={<WindowContentLoader />}><ContactWindowContent /></Suspense>,
         position: { x: 170, y: 85 },
         size: { width: 950, height: 650 },
         isMaximized: false,
@@ -282,7 +294,7 @@ export default function App() {
       experience: {
         title: "Experience",
         icon: <UserCheck className="w-4 h-4" />,
-        content: <ExperienceWindowContent />,
+        content: <Suspense fallback={<WindowContentLoader />}><ExperienceWindowContent /></Suspense>,
         position: { x: 170, y: 80 },
         size: { width: 950, height: 650 },
         isMaximized: false,
@@ -291,7 +303,7 @@ export default function App() {
       awards: {
         title: "Certifications",
         icon: <Medal className="w-4 h-4" />,
-        content: <AwardsWindowContent />,
+        content: <Suspense fallback={<WindowContentLoader />}><AwardsWindowContent /></Suspense>,
         position: { x: 190, y: 100 },
         size: { width: 1050, height: 700 },
         isMaximized: false,

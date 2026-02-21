@@ -1,2 +1,25 @@
 reference_style/
 node_modules
+
+# Deployment guide and scripts (contains sensitive information)
+DEPLOYMENT_GUIDE.md
+deploy.sh
+deploy.bat
+deploy-scripts.json
+
+# Build outputs
+dist/
+.vercel
+
+# Environment files
+.env
+.env.local
+.env.production
+
+# Editor directories
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
