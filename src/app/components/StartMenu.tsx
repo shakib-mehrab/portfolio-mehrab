@@ -67,7 +67,7 @@ export function StartMenu({ isOpen, onClose, onMenuItemClick }: StartMenuProps) 
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.15 }}
-            className="fixed bottom-12 left-0 z-50 w-[520px] h-[580px] rounded-tr-lg shadow-2xl overflow-hidden"
+            className="fixed bottom-12 left-0 md:left-0 right-0 md:right-auto z-50 md:w-[520px] w-full md:h-[580px] h-[calc(100vh-3rem)] rounded-none md:rounded-tr-lg shadow-2xl overflow-hidden"
             style={{
               background:
                 "linear-gradient(to bottom, rgba(242, 244, 247, 0.95), rgba(232, 234, 237, 0.95))",
@@ -76,17 +76,17 @@ export function StartMenu({ isOpen, onClose, onMenuItemClick }: StartMenuProps) 
             }}
           >
             {/* User Profile Section */}
-            <div className="h-14 bg-gradient-to-b from-[rgba(169,207,241,0.5)] to-transparent px-4 flex items-center gap-3 border-b border-white/50">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white shadow-lg">
-                <User className="w-6 h-6" />
+            <div className="h-12 md:h-14 bg-gradient-to-b from-[rgba(169,207,241,0.5)] to-transparent px-3 md:px-4 flex items-center gap-2 md:gap-3 border-b border-white/50">
+              <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white shadow-lg">
+                <User className="w-5 h-5 md:w-6 md:h-6" />
               </div>
-              <span className="font-semibold text-gray-800">Mehrab Hossain Shakib</span>
+              <span className="font-semibold text-sm md:text-base text-gray-800">Mehrab Hossain Shakib</span>
             </div>
 
             {/* Menu Content */}
-            <div className="flex h-[calc(100%-112px)]">
+            <div className="flex flex-col md:flex-row h-[calc(100%-9rem)] md:h-[calc(100%-112px)]">
               {/* Left Column - Programs */}
-              <div className="flex-1 bg-white/40 backdrop-blur-sm p-2">
+              <div className="flex-1 bg-white/40 backdrop-blur-sm p-2 overflow-y-auto">
                 <div className="space-y-0.5">
                   {leftMenuItems.map((item) => (
                     <button
@@ -95,9 +95,9 @@ export function StartMenu({ isOpen, onClose, onMenuItemClick }: StartMenuProps) 
                         onMenuItemClick(item.id);
                         onClose();
                       }}
-                      className="w-full flex items-center gap-3 px-3 py-2 rounded hover:bg-blue-500/20 hover:shadow-sm transition-all group"
+                      className="w-full flex items-center gap-2 md:gap-3 px-2 md:px-3 py-2 rounded hover:bg-blue-500/20 hover:shadow-sm transition-all group"
                     >
-                      <div className="text-blue-600 group-hover:text-blue-700">
+                      <div className="text-blue-600 group-hover:text-blue-700 flex-shrink-0">
                         {item.icon}
                       </div>
                       <span className="text-sm font-medium text-gray-800 group-hover:text-gray-900">
@@ -108,16 +108,16 @@ export function StartMenu({ isOpen, onClose, onMenuItemClick }: StartMenuProps) 
                 </div>
               </div>
 
-              {/* Right Column - System */}
-              <div className="w-52 p-2 border-l border-white/40">
+              {/* Right Column - System - hidden on small mobile */}
+              <div className="hidden sm:block w-full sm:w-52 p-2 border-t sm:border-t-0 sm:border-l border-white/40 overflow-y-auto">
                 <div className="space-y-0.5">
                   {rightMenuItems.map((item, index) => (
                     <button
                       key={index}
-                      className="w-full flex items-center justify-between gap-2 px-3 py-2 rounded hover:bg-blue-500/20 transition-all group"
+                      className="w-full flex items-center justify-between gap-2 px-2 md:px-3 py-2 rounded hover:bg-blue-500/20 transition-all group"
                     >
                       <div className="flex items-center gap-2">
-                        <div className="text-blue-600 group-hover:text-blue-700">
+                        <div className="text-blue-600 group-hover:text-blue-700 flex-shrink-0">
                           {item.icon}
                         </div>
                         <span className="text-sm font-medium text-gray-800">
@@ -132,22 +132,22 @@ export function StartMenu({ isOpen, onClose, onMenuItemClick }: StartMenuProps) 
             </div>
 
             {/* Search Bar */}
-            <div className="h-12 bg-gradient-to-r from-[rgba(169,207,241,0.4)] to-[rgba(138,186,230,0.4)] backdrop-blur-md px-4 flex items-center gap-2 border-t border-white/50">
-              <Search className="w-4 h-4 text-gray-600" />
+            <div className="h-10 md:h-12 bg-gradient-to-r from-[rgba(169,207,241,0.4)] to-[rgba(138,186,230,0.4)] backdrop-blur-md px-3 md:px-4 flex items-center gap-2 border-t border-white/50">
+              <Search className="w-3 h-3 md:w-4 md:h-4 text-gray-600 flex-shrink-0" />
               <input
                 type="text"
                 placeholder="Search programs and files"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="flex-1 bg-white/60 border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:bg-white"
+                className="flex-1 bg-white/60 border border-gray-300 rounded px-2 py-1 text-xs md:text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:bg-white"
               />
             </div>
 
             {/* Shutdown Section */}
-            <div className="h-11 bg-gradient-to-b from-[rgba(169,207,241,0.6)] to-[rgba(138,186,230,0.6)] backdrop-blur-md px-4 flex items-center justify-end border-t border-white/50">
-              <button className="flex items-center gap-2 px-4 py-1.5 rounded hover:bg-red-500/20 transition-all group">
-                <Power className="w-4 h-4 text-red-600 group-hover:text-red-700" />
-                <span className="text-sm font-medium text-gray-800">Shut down</span>
+            <div className="h-10 md:h-11 bg-gradient-to-b from-[rgba(169,207,241,0.6)] to-[rgba(138,186,230,0.6)] backdrop-blur-md px-3 md:px-4 flex items-center justify-end border-t border-white/50">
+              <button className="flex items-center gap-1.5 md:gap-2 px-3 md:px-4 py-1.5 rounded hover:bg-red-500/20 transition-all group">
+                <Power className="w-3 h-3 md:w-4 md:h-4 text-red-600 group-hover:text-red-700" />
+                <span className="text-xs md:text-sm font-medium text-gray-800">Shut down</span>
               </button>
             </div>
           </motion.div>

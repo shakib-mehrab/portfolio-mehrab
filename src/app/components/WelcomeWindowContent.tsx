@@ -5,20 +5,20 @@ import { GlassCard } from "./GlassCard";
 import { profile } from "../../data/profile";
 
 const LINES: { text: string; gradient?: boolean; className: string }[] = [
-  { text: "Hi There! 👋", className: "text-2xl text-white/75 font-light" },
+  { text: "Hi There! 👋", className: "text-lg md:text-2xl text-white/75 font-light" },
   {
     text: `I am ${profile.name}`,
     gradient: true,
-    className: "text-4xl font-bold leading-tight",
+    className: "text-2xl md:text-4xl font-bold leading-tight",
   },
-  { text: "A Passionate Developer", className: "text-xl text-blue-200/85" },
+  { text: "A Passionate Developer", className: "text-base md:text-xl text-blue-200/85" },
   {
     text: "A Blockchain Enthusiast and Learner",
-    className: "text-xl text-purple-200/85",
+    className: "text-base md:text-xl text-purple-200/85",
   },
   {
     text: "Welcome To My Portfolio ✨",
-    className: "text-2xl font-semibold text-cyan-200/85",
+    className: "text-lg md:text-2xl font-semibold text-cyan-200/85",
   },
 ];
 

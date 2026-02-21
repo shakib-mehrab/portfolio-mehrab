@@ -20,10 +20,10 @@ function ProjectCard({ project, index }: { project: typeof projects[0]; index: n
       className="flex flex-col group"
     >
       {/* Glassmorphism Card with full background image */}
-      <div className="relative h-[420px] rounded-3xl overflow-hidden shadow-xl shadow-blue-500/10 hover:shadow-2xl hover:shadow-blue-500/30 transition-all duration-500 hover:-translate-y-2">
+      <div className="relative h-[340px] md:h-[420px] rounded-2xl md:rounded-3xl overflow-hidden shadow-xl shadow-blue-500/10 hover:shadow-2xl hover:shadow-blue-500/30 transition-all duration-500 hover:-translate-y-2">
         {/* Glowing Border Effect */}
-        <div className="absolute inset-0 rounded-3xl p-[1px] bg-gradient-to-br from-blue-400/40 via-purple-400/40 to-cyan-400/40 group-hover:from-blue-400/60 group-hover:via-purple-400/60 group-hover:to-cyan-400/60 transition-all duration-500 animate-pulse-slow">
-          <div className="absolute inset-0 rounded-3xl bg-black/20 backdrop-blur-sm" />
+        <div className="absolute inset-0 rounded-2xl md:rounded-3xl p-[1px] bg-gradient-to-br from-blue-400/40 via-purple-400/40 to-cyan-400/40 group-hover:from-blue-400/60 group-hover:via-purple-400/60 group-hover:to-cyan-400/60 transition-all duration-500 animate-pulse-slow">
+          <div className="absolute inset-0 rounded-2xl md:rounded-3xl bg-black/20 backdrop-blur-sm" />
         </div>
 
         {/* Background Image */}
@@ -173,8 +173,8 @@ function ProjectCard({ project, index }: { project: typeof projects[0]; index: n
 
 export function ProjectsWindowContent() {
   return (
-    <div className="p-6 overflow-auto h-full">
-      <div className="max-w-6xl mx-auto space-y-10">
+    <div className="p-3 md:p-6 overflow-auto h-full">
+      <div className="max-w-6xl mx-auto space-y-6 md:space-y-10">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -16 }}

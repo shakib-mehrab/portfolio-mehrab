@@ -90,29 +90,29 @@ export function AchievementsWindowContent() {
               ))}
 
               {/* Frosted Glass Content Area */}
-              <div className="absolute inset-0 flex flex-col items-center justify-center p-8 backdrop-blur-sm bg-gradient-to-b from-transparent via-black/20 to-black/60 group-hover:backdrop-blur-md transition-all duration-500">
+              <div className="absolute inset-0 flex flex-col items-center justify-center p-4 md:p-8 backdrop-blur-sm bg-gradient-to-b from-transparent via-black/20 to-black/60 group-hover:backdrop-blur-md transition-all duration-500">
                 <div className="relative z-10 text-center max-w-3xl">
                   {/* Icon */}
                   <motion.div
                     initial={{ scale: 0.7, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ duration: 0.5, delay: 0.3, type: "spring", stiffness: 180 }}
-                    className="inline-flex mb-6"
+                    className="inline-flex mb-4 md:mb-6"
                   >
-                    <div className="relative overflow-hidden p-2" style={{ filter: 'drop-shadow(0 10px 40px rgba(255, 255, 255, 0.4)) drop-shadow(0 0 20px rgba(255, 255, 255, 0.3))' }}>
+                    <div className="relative overflow-hidden p-1.5 md:p-2" style={{ filter: 'drop-shadow(0 10px 40px rgba(255, 255, 255, 0.4)) drop-shadow(0 0 20px rgba(255, 255, 255, 0.3))' }}>
                       {/* Enhanced Glassmorphism shadow background */}
                       <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-white/10 to-white/5 backdrop-blur-2xl border border-white/30" />
                       {featured.icon ? (
                         <img
                           src={featured.icon}
                           alt={`${featured.title} icon`}
-                          className="h-24 w-auto object-contain relative z-10"
+                          className="h-16 md:h-24 w-auto object-contain relative z-10"
                           onError={(e) => {
                             (e.currentTarget as HTMLImageElement).style.display = "none";
                           }}
                         />
                       ) : (
-                        <div className="w-24 h-24 flex items-center justify-center relative z-10">
+                        <div className="w-16 h-16 md:w-24 md:h-24 flex items-center justify-center relative z-10">
                           {iconForAchievement(featured.title)}
                         </div>
                       )}
@@ -120,26 +120,26 @@ export function AchievementsWindowContent() {
                   </motion.div>
 
                   {/* Title */}
-                  <h3 className="text-3xl md:text-4xl font-bold text-white mb-3 drop-shadow-lg">
+                  <h3 className="text-xl md:text-3xl lg:text-4xl font-bold text-white mb-2 md:mb-3 drop-shadow-lg">
                     {featured.title}
                   </h3>
                   
                   {/* Subtitle */}
-                  <p className="text-blue-200 text-lg md:text-xl font-semibold mb-4 drop-shadow">
+                  <p className="text-blue-200 text-sm md:text-lg lg:text-xl font-semibold mb-3 md:mb-4 drop-shadow">
                     {featured.subtitle}
                   </p>
                   
                   {/* Description */}
-                  <p className="text-white/90 text-sm md:text-base leading-relaxed max-w-2xl mx-auto mb-6 drop-shadow">
+                  <p className="text-white/90 text-xs md:text-sm lg:text-base leading-relaxed max-w-2xl mx-auto mb-4 md:mb-6 drop-shadow">
                     {featured.description}
                   </p>
                   
                   {/* Tags */}
-                  <div className="flex flex-wrap gap-2 justify-center">
+                  <div className="flex flex-wrap gap-1.5 md:gap-2 justify-center">
                     {featured.tags.map((tag, i) => (
                       <span
                         key={i}
-                        className="px-4 py-2 rounded-full text-sm font-medium bg-white/10 backdrop-blur-md border border-white/30 text-white shadow-lg hover:bg-white/20 hover:border-white/40 transition-all duration-300"
+                        className="px-2 md:px-4 py-1 md:py-2 rounded-full text-[10px] md:text-sm font-medium bg-white/10 backdrop-blur-md border border-white/30 text-white shadow-lg hover:bg-white/20 hover:border-white/40 transition-all duration-300"
                       >
                         {tag}
                       </span>
@@ -164,7 +164,7 @@ export function AchievementsWindowContent() {
         )}
 
         {/* Other Achievements */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-5">
           {others.map((achievement, index) => (
             <motion.div
               key={index}
@@ -174,7 +174,7 @@ export function AchievementsWindowContent() {
               className="group"
             >
               {/* Enhanced GlassCard with continuous sweep */}
-              <div className="relative h-full min-h-[300px] rounded-3xl border border-white/[0.08] overflow-hidden transition-all duration-300 hover:shadow-[0_0_44px_rgba(59,130,246,0.30)] hover:-translate-y-0.5 hover:border-white/[0.16]">
+              <div className="relative h-full min-h-[240px] md:min-h-[300px] rounded-2xl md:rounded-3xl border border-white/[0.08] overflow-hidden transition-all duration-300 hover:shadow-[0_0_44px_rgba(59,130,246,0.30)] hover:-translate-y-0.5 hover:border-white/[0.16]">
                 {/* Background Image (if available) */}
                 {achievement.image ? (
                   <>
@@ -212,15 +212,15 @@ export function AchievementsWindowContent() {
                 />
 
                 {/* Content with backdrop blur for image cards */}
-                <div className={`flex flex-col items-center justify-center text-center relative z-10 h-full p-6 ${achievement.image ? 'backdrop-blur-sm' : ''}`}>
-                  <div className="relative overflow-hidden mb-3 p-1.5" style={{ filter: 'drop-shadow(0 6px 20px rgba(255, 255, 255, 0.3)) drop-shadow(0 0 12px rgba(255, 255, 255, 0.2))' }}>
+                <div className={`flex flex-col items-center justify-center text-center relative z-10 h-full p-4 md:p-6 ${achievement.image ? 'backdrop-blur-sm' : ''}`}>
+                  <div className="relative overflow-hidden mb-2 md:mb-3 p-1 md:p-1.5" style={{ filter: 'drop-shadow(0 6px 20px rgba(255, 255, 255, 0.3)) drop-shadow(0 0 12px rgba(255, 255, 255, 0.2))' }}>
                     {/* Enhanced Glassmorphism shadow background */}
                     <div className={`absolute inset-0 ${achievement.image ? 'bg-gradient-to-br from-white/20 via-white/12 to-white/5 backdrop-blur-xl border border-white/40' : 'bg-gradient-to-br from-white/15 via-white/8 to-white/5 backdrop-blur-lg border border-white/20'}`} />
                     {achievement.icon ? (
                       <img
                         src={achievement.icon}
                         alt={`${achievement.title} icon`}
-                        className="h-14 w-auto object-contain relative z-10"
+                        className="h-12 md:h-14 w-auto object-contain relative z-10"
                         onError={(e) => {
                           (e.currentTarget as HTMLImageElement).style.display = "none";
                           const parent = e.currentTarget.parentElement;
@@ -233,25 +233,25 @@ export function AchievementsWindowContent() {
                         }}
                       />
                     ) : (
-                      <div className="w-14 h-14 flex items-center justify-center relative z-10">
+                      <div className="w-12 h-12 md:w-14 md:h-14 flex items-center justify-center relative z-10">
                         {iconForAchievement(achievement.title)}
                       </div>
                     )}
                   </div>
-                  <h4 className={`font-semibold mb-1 ${achievement.image ? 'text-white text-lg' : 'text-white'}`}>
+                  <h4 className={`font-semibold mb-1 text-sm md:text-base ${achievement.image ? 'text-white lg:text-lg' : 'text-white'}`}>
                     {achievement.title}
                   </h4>
-                  <p className={`text-xs mb-2 ${achievement.image ? 'text-blue-200' : 'text-blue-200'}`}>
+                  <p className={`text-[10px] md:text-xs mb-1.5 md:mb-2 ${achievement.image ? 'text-blue-200' : 'text-blue-200'}`}>
                     {achievement.subtitle}
                   </p>
-                  <p className={`text-xs leading-relaxed mb-3 ${achievement.image ? 'text-white/90 drop-shadow' : 'text-white/60'}`}>
+                  <p className={`text-[10px] md:text-xs leading-relaxed mb-2 md:mb-3 ${achievement.image ? 'text-white/90 drop-shadow' : 'text-white/60'}`}>
                     {achievement.description}
                   </p>
                   <div className="flex flex-wrap gap-1 justify-center">
                     {achievement.tags.map((tag, i) => (
                       <span
                         key={i}
-                        className={`px-2 py-0.5 rounded-full text-xs ${achievement.image ? 'bg-white/10 backdrop-blur-md border border-white/30 text-white' : 'bg-white/10 border border-white/20 text-white/60'}`}
+                        className={`px-1.5 md:px-2 py-0.5 rounded-full text-[9px] md:text-xs ${achievement.image ? 'bg-white/10 backdrop-blur-md border border-white/30 text-white' : 'bg-white/10 border border-white/20 text-white/60'}`}
                       >
                         {tag}
                       </span>

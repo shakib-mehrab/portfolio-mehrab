@@ -364,16 +364,16 @@ export default function App() {
       {/* Ambient gradient overlay */}
       <div className="absolute inset-0 opacity-40 bg-ambient-overlay" />
 
-      {/* Decorative floating elements — reference_style inspired */}
-      <div className="absolute top-1/4 right-[12%] w-56 h-56 border border-blue-500/10 rounded-full pointer-events-none animate-orbit" />
-      <div className="absolute bottom-1/3 left-[30%] w-36 h-36 border border-purple-500/10 rounded-lg rotate-12 pointer-events-none" />
-      <div className="absolute top-[12%] right-[35%] w-2 h-2 bg-blue-400/60 rounded-full pointer-events-none animate-float" />
-      <div className="absolute top-[60%] right-[8%] w-1.5 h-1.5 bg-purple-400/60 rounded-full pointer-events-none animate-float-slow" />
-      <div className="absolute top-[35%] left-[40%] w-1 h-1 bg-cyan-400/50 rounded-full pointer-events-none animate-pulse" />
-      <div className="absolute bottom-[20%] right-[25%] w-1.5 h-1.5 bg-blue-300/40 rounded-full pointer-events-none animate-pulse delay-pulse-1s" />
+      {/* Decorative floating elements — reference_style inspired - hidden on mobile */}
+      <div className="hidden md:block absolute top-1/4 right-[12%] w-56 h-56 border border-blue-500/10 rounded-full pointer-events-none animate-orbit" />
+      <div className="hidden md:block absolute bottom-1/3 left-[30%] w-36 h-36 border border-purple-500/10 rounded-lg rotate-12 pointer-events-none" />
+      <div className="hidden md:block absolute top-[12%] right-[35%] w-2 h-2 bg-blue-400/60 rounded-full pointer-events-none animate-float" />
+      <div className="hidden md:block absolute top-[60%] right-[8%] w-1.5 h-1.5 bg-purple-400/60 rounded-full pointer-events-none animate-float-slow" />
+      <div className="hidden md:block absolute top-[35%] left-[40%] w-1 h-1 bg-cyan-400/50 rounded-full pointer-events-none animate-pulse" />
+      <div className="hidden md:block absolute bottom-[20%] right-[25%] w-1.5 h-1.5 bg-blue-300/40 rounded-full pointer-events-none animate-pulse delay-pulse-1s" />
 
-      {/* Desktop Icons — 2-col grid, clears the 48px taskbar */}
-      <div className="absolute top-4 left-3 z-10 grid grid-cols-2 gap-1 content-start overflow-y-auto overflow-x-hidden scrollbar-none desktop-icons-grid">
+      {/* Desktop Icons — 2-col grid on desktop, hidden on mobile (use Start Menu instead) */}
+      <div className="hidden md:grid absolute top-4 left-3 z-10 grid-cols-2 gap-1 content-start overflow-y-auto overflow-x-hidden scrollbar-none desktop-icons-grid">
         {desktopIcons.map((icon) => (
           <DesktopIcon
             key={icon.id}
