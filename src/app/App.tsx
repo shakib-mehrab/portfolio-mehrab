@@ -372,6 +372,40 @@ export default function App() {
       <div className="hidden md:block absolute top-[35%] left-[40%] w-1 h-1 bg-cyan-400/50 rounded-full pointer-events-none animate-pulse" />
       <div className="hidden md:block absolute bottom-[20%] right-[25%] w-1.5 h-1.5 bg-blue-300/40 rounded-full pointer-events-none animate-pulse delay-pulse-1s" />
 
+      {/* Welcome Message - Transparent Background Text */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
+        <div className="text-center max-w-4xl px-6 md:px-8">
+          <h1 
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 md:mb-6 opacity-[0.12] text-cyan-200 whitespace-nowrap"
+            style={{ 
+              fontFamily: '"Quantico", sans-serif',
+              textShadow: '0 0 30px rgba(34, 211, 238, 0.15), 0 0 60px rgba(59, 130, 246, 0.1), 0 0 90px rgba(147, 51, 234, 0.08)'
+            }}
+          >
+            Welcome to My Portfolio
+          </h1>
+          <p 
+            className="text-base sm:text-lg md:text-xl lg:text-2xl mb-6 md:mb-8 opacity-[0.11] text-blue-200 leading-relaxed"
+            style={{ 
+              fontFamily: '"Quantico", sans-serif',
+              textShadow: '0 0 25px rgba(59, 130, 246, 0.12), 0 0 50px rgba(34, 211, 238, 0.08)'
+            }}
+          >
+            To explore, click any of the icons on the desktop menu
+          </p>
+          <p 
+            className="text-xs sm:text-sm md:text-base lg:text-lg opacity-[0.09] text-purple-200/80 leading-relaxed px-4"
+            style={{ 
+              fontFamily: '"Quantico", sans-serif',
+              fontStyle: 'italic',
+              textShadow: '0 0 20px rgba(147, 51, 234, 0.1), 0 0 40px rgba(59, 130, 246, 0.06)'
+            }}
+          >
+            Inspired by the nostalgia of Windows 7—my childhood desktop theme that sparked my love for technology. This portfolio brings back those cherished memories.
+          </p>
+        </div>
+      </div>
+
       {/* Desktop Icons — 2-col grid on desktop, hidden on mobile (use Start Menu instead) */}
       <div className="hidden md:grid absolute top-4 left-3 z-10 grid-cols-2 gap-1 content-start overflow-y-auto overflow-x-hidden scrollbar-none desktop-icons-grid">
         {desktopIcons.map((icon) => (
