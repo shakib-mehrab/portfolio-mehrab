@@ -394,7 +394,7 @@ export default function App() {
               textShadow: '0 0 30px rgba(34, 211, 238, 0.15), 0 0 60px rgba(59, 130, 246, 0.1), 0 0 90px rgba(147, 51, 234, 0.08)'
             }}
           >
-            Welcome to My Portfolio
+            Welcome to My Portfolio!
           </h1>
           <p 
             className="text-base sm:text-lg md:text-xl lg:text-2xl mb-6 md:mb-8 opacity-[0.11] text-blue-200 leading-relaxed"
@@ -463,6 +463,12 @@ export default function App() {
         activeWindow={activeWindowId}
         onWindowClick={handleTaskbarClick}
         onStartMenuItemClick={(item) => openWindow(item)}
+        onStartButtonClick={() => {
+          // Close welcome window on mobile when Start menu is opened
+          if (window.innerWidth < 768) {
+            setOpenWindows((windows) => windows.filter((w) => w.id !== "welcome"));
+          }
+        }}
       />
     </div>
   );

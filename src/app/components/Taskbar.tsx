@@ -7,6 +7,7 @@ interface TaskbarProps {
   activeWindow: string | null;
   onWindowClick: (id: string) => void;
   onStartMenuItemClick: (item: string) => void;
+  onStartButtonClick?: () => void;
 }
 
 export function Taskbar({
@@ -14,6 +15,7 @@ export function Taskbar({
   activeWindow,
   onWindowClick,
   onStartMenuItemClick,
+  onStartButtonClick,
 }: TaskbarProps) {
   const [isStartMenuOpen, setIsStartMenuOpen] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -51,7 +53,12 @@ export function Taskbar({
       <div className="fixed bottom-0 left-0 right-0 h-12 flex items-center px-1 md:px-2 z-40 bg-taskbar">
         {/* Start Button */}
         <button
-          onClick={() => setIsStartMenuOpen(!isStartMenuOpen)}
+          onClick={() => {
+            setIsStartMenuOpen(!isStartMenuOpen);
+            if (!isStartMenuOpen) {
+              onStartButtonClick?.();
+            }
+          }}
           className={`h-8 md:h-9 px-2 md:px-4 mr-1 md:mr-2 rounded flex items-center gap-1 md:gap-2 font-semibold text-xs md:text-sm transition-all ${
             isStartMenuOpen
               ? "bg-[rgba(20,50,76,0.9)] shadow-inner border-start-btn-active"
