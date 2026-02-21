@@ -93,4 +93,85 @@ export const projects: Project[] = [
     category: "Full Stack",
     image: "images/projects/cse.png",
   },
+   {
+    title: "ChatDapp - A decentralized chat application",
+    description:
+      "A decentralized real-time chat application built with Next.js, Solidity, Hardhat, and ethers.js. This dApp enables users to chat securely on the blockchain, integrate MetaMask for authentication, and perform real-time transactions.",
+    technologies: ["React", "Node.js", "Express", "ether.js", "Solidity", "HardHat"],
+    githubUrl: "https://github.com/shakib-mehrab/chatdapp",
+    liveUrl: "https://chatdapp-xi.vercel.app/",
+    category: "Blockchain | Full Stack",
+    image: "images/projects/chatdapp.png",
+  },
+   {
+    title: "MintZillo - A decentralized Realstate Marketplace",
+    description:
+      "MintZillo is a decentralized real estate marketplace built on blockchain technology. It allows users to buy, sell, and rent properties securely and transparently using smart contracts. The platform aims to revolutionize the real estate industry by eliminating intermediaries and providing a seamless experience for buyers and sellers.",
+    technologies: ["React", "Node.js", "Express", "IPFS", "Web3.js", "Solidity", "HardHat"],
+    githubUrl: "https://github.com/shakib-mehrab/mintZillo",
+    liveUrl: "#",
+    category: "Blockchain | Full Stack",
+    image: "images/projects/mintzillo.png",
+  },
+  {
+    title: "FundChain - A decentralized crowdfunding platform",
+    description:
+      "Welcome to FundChain, the next-generation crowdfunding platform designed to transform the way you fund and support projects. Leveraging the power of blockchain technology, FundChain ensures a transparent, secure, and efficient crowdfunding experience for both creators and backers.",
+    technologies: ["React", "Node.js", "Express", "Web3.js", "Solidity", "HardHat"],
+    githubUrl: "https://github.com/shakib-mehrab/Fund-Chain",
+    liveUrl: "#",
+    category: "Blockchain | Full Stack",
+    image: "images/projects/fundchain.png",
+  },
+   {
+    title: "EtherPresso - A decentralized crowdfunding platform",
+    description:
+      "A simple dApp (Decentralized Application) which is integrated with MetaMask Wallet built using solidity, hardhat, ether.js and react.js.",
+    technologies: ["React", "Node.js", "Express", "ether.js", "Solidity", "HardHat"],
+    githubUrl: "https://github.com/shakib-mehrab/etherPressoDapp",
+    liveUrl: "#",
+    category: "Blockchain | Full Stack",
+    image: "images/projects/etherpresso.png",
+  },
+];
+
+// Learning Projects - Basic Fullstack Development Practice
+export const learningProjects: Project[] = [
+  {
+    title: "Weather App",
+    description: "A weather application to learn API integration and responsive design fundamentals.",
+    technologies: ["HTML", "CSS", "JavaScript"],
+    githubUrl: "https://github.com/shakib-mehrab/Weather-App",
+    liveUrl: "https://weather-app-mehrab.netlify.app/",
+    category: "Learning Projects",
+    image: "images/projects/weather-app.png",
+  },
+  {
+    title: "ToDo App",
+    description: "A task management application to practice CRUD operations and state management.",
+    technologies: ["React", "JavaScript", "CSS"],
+    githubUrl: "https://github.com/shakib-mehrab/to-do",
+    liveUrl: "https://mehrab-shakib.github.io/to-do/",
+    category: "Learning Projects",
+    image: "images/projects/to-do.png",
+  },
+  {
+    title: "NoteOnize - A Note App",
+    description: "A simple note-taking application to learn local storage and data persistence.",
+    technologies: ["React", "JavaScript", "LocalStorage"],
+    githubUrl: "https://github.com/shakib-mehrab/noteOnize",
+    liveUrl: "https://mehrab-shakib.github.io/noteOnize/",
+    category: "Learning Projects",
+    image: "images/projects/note-app.png",
+  },
+  {
+    title: "ZenPass - Password Generator",
+    description: "A random password generator to understand string manipulation and randomization.",
+    technologies: ["HTML", "CSS", "JavaScript"],
+    githubUrl: "https://github.com/shakib-mehrab/zenPass-Password-Generator",
+    liveUrl: "https://mehrab-shakib.github.io/zenPass-Password-Generator/",
+    category: "Learning Projects",
+    image: "images/projects/password-generator.png",
+  },
+
 ];

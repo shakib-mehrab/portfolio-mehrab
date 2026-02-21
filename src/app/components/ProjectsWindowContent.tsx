@@ -2,7 +2,7 @@ import { useState } from "react";
 import { ExternalLink, Github, Code2, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { GlassCard } from "./GlassCard";
-import { projects } from "../../data/projects";
+import { projects, learningProjects } from "../../data/projects";
 
 const DELAYS = ["0s", "0.4s", "0.8s", "1.2s", "1.6s", "2.0s"];
 
@@ -142,7 +142,7 @@ function ProjectCard({ project, index }: { project: typeof projects[0]; index: n
 export function ProjectsWindowContent() {
   return (
     <div className="p-6 overflow-auto h-full">
-      <div className="max-w-6xl mx-auto space-y-6">
+      <div className="max-w-6xl mx-auto space-y-10">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -16 }}
@@ -160,12 +160,34 @@ export function ProjectsWindowContent() {
           <p className="text-white/50 text-sm mt-2">Showcase of my recent work and contributions</p>
         </motion.div>
 
-        {/* Projects Grid */}
+        {/* Main Projects Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {projects.map((project, index) => (
             <ProjectCard key={`${project.title}-${index}`} project={project} index={index} />
           ))}
         </div>
+
+        {/* Learning Projects Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+          className="space-y-6 mt-12"
+        >
+          <div className="text-center">
+            <h3 className="text-2xl font-bold inline-block bg-gradient-to-r from-green-200 via-blue-200 to-purple-200 bg-clip-text text-transparent">
+              Learning Projects
+            </h3>
+            <div className="mt-2 mx-auto h-0.5 w-20 bg-gradient-to-r from-green-400 to-blue-400 rounded-full" />
+            <p className="text-white/40 text-sm mt-2">Basic fullstack development practice projects</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {learningProjects.map((project, index) => (
+              <ProjectCard key={`learning-${project.title}-${index}`} project={project} index={index} />
+            ))}
+          </div>
+        </motion.div>
       </div>
     </div>
   );
