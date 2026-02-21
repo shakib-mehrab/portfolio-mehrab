@@ -11,63 +11,86 @@ export interface Project {
 
 export const projects: Project[] = [
   {
-    title: "AI-Powered Task Manager",
+    title: "পথিক (Pathik) - A Bangladesh Travel Companion",
     description:
-      "Smart task management application using machine learning to predict task duration and optimize scheduling. Features real-time collaboration, productivity analytics, and AI-driven priority suggestions.",
-    technologies: ["Next.js", "TypeScript", "Python", "TensorFlow", "MongoDB"],
-    githubUrl: "#",
-    liveUrl: "#",
-    category: "AI / Full Stack",
-    image: "../../public/images/projects/project1.png",
+      "A comprehensive Progressive Web App (PWA) for exploring Bangladesh - Metro stations, Restaurants, Hotels, Markets, and Travel information.",
+    technologies: ["React", "TypeScript", "Firebase", "Nodejs"],
+    githubUrl: "https://github.com/shakib-mehrab/pothik",
+    liveUrl: "https://pathik-db6ee.web.app/",
+    category: "Full Stack",
+    image: "images/projects/pathik.png",
   },
   {
-    title: "Real-time Collaboration Platform",
+    title: "Momentum - AI-Powered Student Productivity Assistant",
     description:
-      "Secure team collaboration platform with end-to-end encrypted messaging, file sharing, live document editing, and video calling. Supports workspaces and per-channel permissions.",
-    technologies: ["React", "Socket.io", "Node.js", "WebRTC", "Redis"],
-    githubUrl: "#",
+      "An intelligent productivity platform that helps students organize academics, skills, and finances with AI-powered insights and personalized planning. This project is a group project built with 3 other developers as part of the SOLVIO Ai Hackthon 2025. I primarily worked on the Frontend, backend, implementing the AI-driven recommendation engine.",
+    technologies: [
+  "PERN", 
+  "ChromaDB", 
+  "TypeScript (Strict)",
+  "TailwindCSS",
+  "shadcn/ui",
+  "Prisma ORM",
+  "Python 3.11 (FastAPI)",
+  "LangChain",
+  "Docker & Compose"
+],
+    githubUrl: "https://github.com/Hackovate/momentum",
+    liveUrl: "https://momentum-gemini.vercel.app/",
+    category: "Ai | Full Stack",
+    image: "images/projects/momentum.png",
+  },
+  {
+    title: "TuitionTrack - A Tuition Management Web App",
+    description:
+      "A full-stack web application designed to streamline tuition management for students and tutors. Features include scheduling, payment tracking, and progress monitoring, built with Next.js, Firebase, and TypeScript.",
+    technologies: ["Next.js", "TypeScript", "Firebase"],
+    githubUrl: "https://github.com/shakib-mehrab/tutiontrack",
+    liveUrl: "https://tutiontrack-tjdu.vercel.app/",
+    category: "Full Stack",
+    image: "images/projects/tuitionTrack.png",
+  },
+  {
+    title: "ZeroWaste - A Sustainable Food Assistant",
+    description:
+      "ZeroWaste is a food waste management web app helping users track food inventory, log consumption, and access sustainability resources. It aims to reduce household food waste through intelligent tracking and insights. This a group project built with 3 other developers as part of the BUBT INNOVATEX Hackathon 2025. I primarily worked on the Frotnend and backend.",
+    technologies: [
+  "Next.js",
+  "React",
+  "Tailwind CSS",
+  "Node.js",
+  "Express.js",
+  "PostgreSQL",
+  "Prisma ORM",
+  "JWT",
+  "Argon2",
+  "Zod",
+  "ImageKit",
+  "Helmet",
+],
+    githubUrl: "https://github.com/Hackovate/ZeroWaste",
+    liveUrl: "https://zero-waste-xi.vercel.app/",
+    category: "Ai / Fullstack",
+    image: "images/projects/zeroWaste.png",
+  },
+  {
+    title: "Stellar Tales - Interactive Space Weather Education Platform",
+    description:
+      "An engaging digital children's story app that explains space weather using real-time NASA and NOAA data with friendly visuals and interactive learning experiences. This is a group project built with 2 other developers as part of the NASA Space Apps Challenge 2025. I primarily worked on the System design, Frontend and backend.",
+    technologies: ["React", "Node.js", "Express"],
+    githubUrl: "https://github.com/Hackovate/steller-tales",
+    liveUrl: "https://steller-tales.vercel.app/",
+    category: "Full Stack",
+    image: "images/projects/stellarTales.svg",
+  },
+  {
+    title: "CSE Society - Club Management System",
+    description:
+      "This is a full-stack web application to manage the CSE Society activities for Comilla University's Computer Science and Engineering Department.This project can be scalable for any university club management. It includes features like event scheduling, member management, and announcement posting.",
+    technologies: ["MERN",],
+    githubUrl: "https://github.com/shakib-mehrab/csesociety",
     liveUrl: "#",
     category: "Full Stack",
-    // image: "/images/projects/collaboration-platform.jpg",
-  },
-  {
-    title: "E-Commerce Mobile App",
-    description:
-      "Full-featured mobile marketplace with vendor management, Stripe payment processing, push notifications, and real-time inventory tracking. Available on iOS and Android.",
-    technologies: ["React Native", "Node.js", "MongoDB", "Stripe", "Firebase"],
-    githubUrl: "#",
-    liveUrl: "#",
-    category: "Mobile",
-    // image: "/images/projects/ecommerce-app.jpg",
-  },
-  {
-    title: "Weather Analytics Dashboard",
-    description:
-      "Comprehensive weather analytics platform with historical data visualisation, forecast models, and location-based alerts. Integrates multiple weather APIs with custom aggregation.",
-    technologies: ["React", "TypeScript", "Recharts", "FastAPI", "PostgreSQL"],
-    githubUrl: "#",
-    liveUrl: "#",
-    category: "Data / Frontend",
-    // image: "/images/projects/weather-dashboard.jpg",
-  },
-  {
-    title: "Social Media Analytics Tool",
-    description:
-      "Cross-platform analytics solution for tracking engagement, follower growth, and content performance. Automated PDF reporting and competitor benchmarking built in.",
-    technologies: ["React", "Node.js", "Express", "PostgreSQL", "Chart.js"],
-    githubUrl: "#",
-    liveUrl: "#",
-    category: "Analytics",
-    // image: "/images/projects/social-analytics.jpg",
-  },
-  {
-    title: "Code Snippet Manager",
-    description:
-      "Developer productivity tool for saving, tagging, and sharing code snippets with syntax highlighting for 50+ languages. Supports team collections and public sharing.",
-    technologies: ["Next.js", "TypeScript", "Prisma", "PostgreSQL", "Tailwind"],
-    githubUrl: "#",
-    liveUrl: "#",
-    category: "Dev Tool",
-    // image: "/images/projects/snippet-manager.jpg",
+    image: "images/projects/cse.png",
   },
 ];

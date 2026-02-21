@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Code, Database, Layout, Server, Smartphone, Wrench, ChevronDown } from "lucide-react";
+import { Code, Database, Layout, Server, Smartphone, Wrench, ChevronDown, Brain, Code2, Trophy } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { GlassCard } from "./GlassCard";
 import { skillCategories } from "../../data/skills";
@@ -7,7 +7,7 @@ import type { SkillCategory } from "../../data/skills";
 import type { LucideIcon } from "lucide-react";
 
 const iconMap: Record<string, LucideIcon> = {
-  Layout, Server, Database, Code, Smartphone, Wrench,
+  Layout, Server, Database, Code, Smartphone, Wrench, Brain, Code2, Trophy,
 };
 
 const DELAYS = ["0s", "0.7s", "1.4s", "2.1s", "2.8s", "3.5s"];

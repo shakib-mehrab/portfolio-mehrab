@@ -3,6 +3,16 @@
 
 @import 'tw-animate-css';
 
+@theme {
+  --font-family-sans: 'Poppins', 'Hind Siliguri', system-ui, -apple-system, sans-serif;
+  --font-family-bangla: 'Hind Siliguri', system-ui, -apple-system, sans-serif;
+}
+
+/* Custom utility for Bangla font */
+.font-bangla {
+  font-family: 'Hind Siliguri', system-ui, -apple-system, sans-serif;
+}
+
 @keyframes sweep {
   0% { transform: translateX(-150%) skewX(-12deg); opacity: 0; }
   10% { opacity: 1; }
