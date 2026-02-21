@@ -6,7 +6,8 @@ DEPLOYMENT_GUIDE.md
 deploy.sh
 deploy.bat
 deploy-scripts.json
-
+QUICK_START.md
+CODE_QUALITY.md
 # Build outputs
 dist/
 .vercel
