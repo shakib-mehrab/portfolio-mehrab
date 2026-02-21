@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Users, Cpu, Heart, Link, BookOpen, PenLine, Calendar, MapPin } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { motion } from "motion/react";
@@ -50,51 +51,91 @@ export function CoCurricularsWindowContent() {
         {/* Activities Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {cocurriculars.map((activity, index) => {
-            const Icon = iconMap[activity.iconName] ?? Users;
-            return (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 24 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.45, delay: index * 0.09, ease: "easeOut" }}
-              >
-                <GlassCard hover padding="none" sweepDelay={DELAYS[index % DELAYS.length]}>
-                  <div className="flex">
-                    {/* Left accent bar */}
-                    <div className="w-1 flex-shrink-0 bg-gradient-to-b from-blue-400 to-purple-400 rounded-l-3xl" />
-                    <div className="p-5 flex-1">
-                      <div className="flex items-start gap-3 mb-3">
-                        <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${activity.color} flex items-center justify-center flex-shrink-0 shadow-lg`}>
-                          <Icon className="w-5 h-5 text-white" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <h3 className="text-white font-semibold leading-tight">{activity.title}</h3>
-                          <span className="inline-block mt-1 px-2 py-0.5 rounded-full text-xs bg-blue-500/20 border border-blue-400/25 text-blue-200">
-                            {activity.role}
-                          </span>
-                        </div>
-                      </div>
-
-                      <div className="flex flex-wrap gap-3 text-xs text-white/40 mb-3">
-                        <div className="flex items-center gap-1">
-                          <MapPin className="w-3 h-3" />
-                          <span>{activity.organization}</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Calendar className="w-3 h-3" />
-                          <span>{activity.period}</span>
-                        </div>
-                      </div>
-
-                      <p className="text-white/65 text-sm leading-relaxed">{activity.description}</p>
-                    </div>
-                  </div>
-                </GlassCard>
-              </motion.div>
-            );
+            return <ActivityCard key={index} activity={activity} index={index} />;
           })}
         </div>
       </div>
     </div>
+  );
+}
+
+function ActivityCard({ activity, index }: { activity: typeof cocurriculars[0]; index: number }) {
+  const [showFullDescription, setShowFullDescription] = useState(false);
+  const Icon = iconMap[activity.iconName] ?? Users;
+  const isLongDescription = activity.description.length > 150;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.45, delay: index * 0.09, ease: "easeOut" }}
+    >
+      <GlassCard hover padding="none" sweepDelay={DELAYS[index % DELAYS.length]} className="h-full flex flex-col">
+        <div className="flex h-full">
+          {/* Left accent bar */}
+          <div className="w-1 flex-shrink-0 bg-gradient-to-b from-blue-400 to-purple-400 rounded-l-3xl" />
+          <div className="p-5 flex-1 flex flex-col">
+            <div className="flex items-start gap-3 mb-3">
+              {/* Organization Logo or Icon */}
+              {activity.image ? (
+                <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center flex-shrink-0 overflow-hidden">
+                  <img
+                    src={activity.image}
+                    alt={activity.organization}
+                    className="w-full h-full object-contain"
+                    onError={(e) => {
+                      (e.currentTarget as HTMLImageElement).style.display = "none";
+                      const parent = e.currentTarget.parentElement;
+                      if (parent) {
+                        parent.className = `w-10 h-10 rounded-xl bg-gradient-to-br ${activity.color} flex items-center justify-center flex-shrink-0 shadow-lg`;
+                        const icon = document.createElement('div');
+                        icon.innerHTML = '<svg class="w-5 h-5 text-white" />';
+                        parent.appendChild(icon);
+                      }
+                    }}
+                  />
+                </div>
+              ) : (
+                <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${activity.color} flex items-center justify-center flex-shrink-0 shadow-lg`}>
+                  <Icon className="w-5 h-5 text-white" />
+                </div>
+              )}
+              <div className="flex-1 min-w-0">
+                <h3 className="text-white font-semibold leading-tight">{activity.title}</h3>
+                <span className="inline-block mt-1 px-2 py-0.5 rounded-full text-xs bg-blue-500/20 border border-blue-400/25 text-blue-200">
+                  {activity.role}
+                </span>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap gap-3 text-xs text-white/40 mb-3">
+              <div className="flex items-center gap-1">
+                <MapPin className="w-3 h-3" />
+                <span>{activity.organization}</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <Calendar className="w-3 h-3" />
+                <span>{activity.period}</span>
+              </div>
+            </div>
+
+            {/* Description with Show More */}
+            <div className="flex-1">
+              <p className={`text-white/65 text-sm leading-relaxed ${!showFullDescription && isLongDescription ? 'line-clamp-3' : ''}`}>
+                {activity.description}
+              </p>
+              {isLongDescription && (
+                <button
+                  onClick={() => setShowFullDescription(!showFullDescription)}
+                  className="text-xs text-blue-300 hover:text-blue-200 transition-colors duration-200 mt-2 font-medium"
+                >
+                  {showFullDescription ? "Show Less" : "Show More"}
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      </GlassCard>
+    </motion.div>
   );
 }

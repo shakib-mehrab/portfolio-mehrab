@@ -236,9 +236,13 @@ export default function App() {
               </div>
               <h3 className="text-2xl font-bold inline-block bg-gradient-to-r from-blue-200 via-cyan-200 to-purple-200 bg-clip-text text-transparent mb-2">Resume</h3>
               <p className="text-white/60 mb-6 text-sm">Download my resume to learn more about my experience</p>
-              <button className="px-6 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white rounded-xl font-semibold transition-all duration-200 hover:shadow-[0_0_20px_rgba(59,130,246,0.4)] hover:-translate-y-0.5">
+              <a
+                href="/resume.pdf"
+                download="Shakib_Mehrab_Resume.pdf"
+                className="inline-block px-6 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white rounded-xl font-semibold transition-all duration-200 hover:shadow-[0_0_20px_rgba(59,130,246,0.4)] hover:-translate-y-0.5"
+              >
                 Download PDF
-              </button>
+              </a>
             </div>
           </div>
         ),

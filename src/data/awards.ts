@@ -20,7 +20,7 @@ export interface Award {
 
 export const awards: Award[] = [
   {
-    title: "AWS Certified Solutions Architect",
+    title: "Blockchain Fundamentals",
     issuer: "Amazon Web Services",
     year: "2024",
     category: "Cloud",

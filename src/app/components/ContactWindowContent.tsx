@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Mail, MapPin, Linkedin, Github, Twitter, Instagram, Send } from "lucide-react";
+import { Mail, MapPin, Linkedin, Github, Twitter, Instagram, Facebook, Palette, Send, Check } from "lucide-react";
 import { motion } from "motion/react";
 import { GlassCard } from "./GlassCard";
 import { profile } from "../../data/profile";
@@ -11,11 +11,27 @@ export function ContactWindowContent() {
     subject: "",
     message: "",
   });
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    alert("Thank you for your message! I'll get back to you soon.");
-    setFormData({ name: "", email: "", subject: "", message: "" });
+    
+    // Create mailto link with form data
+    const mailtoLink = `mailto:${profile.email}?subject=${encodeURIComponent(formData.subject)}&body=${encodeURIComponent(
+      `Name: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`
+    )}`;
+    
+    // Open email client
+    window.location.href = mailtoLink;
+    
+    // Show success message
+    setIsSubmitted(true);
+    
+    // Reset form after 3 seconds
+    setTimeout(() => {
+      setFormData({ name: "", email: "", subject: "", message: "" });
+      setIsSubmitted(false);
+    }, 3000);
   };
 
   const handleChange = (
@@ -79,13 +95,15 @@ export function ContactWindowContent() {
               </div>
 
               <div className="mt-5 pt-5 border-t border-white/10">
-                <h4 className="text-sm font-medium text-white/70 mb-3">Social Media</h4>
-                <div className="flex gap-2">
+                <h4 className="text-sm font-medium text-white/70 mb-3">Connect on Social Media</h4>
+                <div className="flex flex-wrap gap-2">
                   {[
-                    { href: profile.social.github, icon: <Github className="w-4 h-4" /> },
-                    { href: profile.social.linkedin, icon: <Linkedin className="w-4 h-4" /> },
-                    { href: profile.social.twitter, icon: <Twitter className="w-4 h-4" /> },
-                    { href: profile.social.instagram, icon: <Instagram className="w-4 h-4" /> },
+                    { href: profile.social.github, icon: <Github className="w-4 h-4" />, label: "GitHub" },
+                    { href: profile.social.linkedin, icon: <Linkedin className="w-4 h-4" />, label: "LinkedIn" },
+                    { href: profile.social.facebook, icon: <Facebook className="w-4 h-4" />, label: "Facebook" },
+                    { href: profile.social.twitter, icon: <Twitter className="w-4 h-4" />, label: "Twitter" },
+                    { href: profile.social.instagram, icon: <Instagram className="w-4 h-4" />, label: "Instagram" },
+                    { href: profile.social.behance, icon: <Palette className="w-4 h-4" />, label: "Behance" },
                   ].map((s, i) => (
                     <motion.a
                       key={i}
@@ -96,6 +114,7 @@ export function ContactWindowContent() {
                       whileTap={{ scale: 0.95 }}
                       transition={{ type: "spring", stiffness: 350, damping: 20 }}
                       className="w-9 h-9 bg-white/[0.08] border border-white/10 rounded-xl flex items-center justify-center text-white/60 hover:text-white hover:bg-white/[0.15] hover:border-white/20 transition-colors duration-200"
+                      aria-label={s.label}
                     >
                       {s.icon}
                     </motion.a>
@@ -168,11 +187,34 @@ export function ContactWindowContent() {
                   whileHover={{ scale: 1.02, boxShadow: "0 0 20px rgba(59,130,246,0.4)" }}
                   whileTap={{ scale: 0.98 }}
                   transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                  className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white py-3 rounded-xl font-semibold flex items-center justify-center gap-2 transition-colors duration-200"
+                  disabled={isSubmitted}
+                  className={`w-full py-3 rounded-xl font-semibold flex items-center justify-center gap-2 transition-all duration-200 ${
+                    isSubmitted
+                      ? "bg-green-500 text-white cursor-not-allowed"
+                      : "bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white"
+                  }`}
                 >
-                  <Send className="w-4 h-4" />
-                  Send Message
+                  {isSubmitted ? (
+                    <>
+                      <Check className="w-4 h-4" />
+                      Message Sent!
+                    </>
+                  ) : (
+                    <>
+                      <Send className="w-4 h-4" />
+                      Send Message
+                    </>
+                  )}
                 </motion.button>
+                {isSubmitted && (
+                  <motion.p
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="text-center text-green-300 text-sm mt-2"
+                  >
+                    Your email client will open with the message. Thank you!
+                  </motion.p>
+                )}
               </form>
             </GlassCard>
           </motion.div>

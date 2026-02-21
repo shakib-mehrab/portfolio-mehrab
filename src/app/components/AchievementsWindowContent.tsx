@@ -1,9 +1,6 @@
 import { Trophy, Star, Award, Rocket } from "lucide-react";
 import { motion } from "motion/react";
-import { GlassCard } from "./GlassCard";
 import { achievements } from "../../data/achievements";
-
-const DELAYS = ["0s", "0.5s", "1.0s", "1.5s"];
 
 export function AchievementsWindowContent() {
   const featured = achievements.find((a) => a.featured);
@@ -54,81 +51,189 @@ export function AchievementsWindowContent() {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.55, delay: 0.15 }}
+            className="group"
           >
-            <GlassCard glow hover sweepDelay="0.6s" className="text-center relative overflow-hidden">
+            {/* Glassmorphism Banner with Background Image */}
+            <div className="relative h-[400px] rounded-3xl overflow-hidden shadow-2xl shadow-blue-500/20 hover:shadow-blue-500/40 transition-all duration-500">
+              {/* Background Image */}
+              <img
+                src={featured.image || "images/achievements/NasaSpace.jpg"}
+                alt={featured.title}
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+                onError={(e) => {
+                  (e.currentTarget as HTMLImageElement).style.display = "none";
+                }}
+              />
+              
+              {/* Gradient Overlay - Dark for text readability */}
+              <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/50 to-black/80" />
+              
+              {/* Continuous Light Sweep Animation */}
+              <div 
+                className="absolute inset-0 opacity-20 group-hover:opacity-40 transition-opacity duration-500"
+                style={{
+                  animation: 'sweep 5s linear infinite',
+                  background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.05) 40%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.05) 60%, transparent 100%)',
+                  backgroundSize: '200% 100%',
+                }}
+              />
+
               {/* Animated Stars */}
               {starPositions.map((pos, i) => (
                 <motion.div
                   key={i}
-                  className="absolute w-2 h-2 bg-yellow-400 rounded-full pointer-events-none"
+                  className="absolute w-2 h-2 bg-yellow-400 rounded-full pointer-events-none z-10"
                   style={{ top: pos.top, left: pos.left }}
                   animate={{ scale: [1, 1.5, 1], opacity: [0.4, 1, 0.4] }}
                   transition={{ duration: 2, repeat: Infinity, delay: i * 0.35 }}
                 />
               ))}
 
-              <div className="relative z-10">
-                <div className="flex justify-center mb-4">
+              {/* Frosted Glass Content Area */}
+              <div className="absolute inset-0 flex flex-col items-center justify-center p-8 backdrop-blur-sm bg-gradient-to-b from-transparent via-black/20 to-black/60 group-hover:backdrop-blur-md transition-all duration-500">
+                <div className="relative z-10 text-center max-w-3xl">
+                  {/* Icon */}
                   <motion.div
                     initial={{ scale: 0.7, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ duration: 0.5, delay: 0.3, type: "spring", stiffness: 180 }}
-                    className="w-24 h-24 rounded-3xl bg-gradient-to-br from-blue-500/30 to-purple-500/30 flex items-center justify-center border border-blue-400/20"
+                    className="inline-flex mb-6"
                   >
-                    {iconForAchievement(featured.title)}
+                    <div className="w-24 h-24 rounded-3xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-xl">
+                      {iconForAchievement(featured.title)}
+                    </div>
                   </motion.div>
-                </div>
-                <h3 className="text-2xl font-bold inline-block bg-gradient-to-r from-blue-200 via-cyan-200 to-purple-200 bg-clip-text text-transparent mb-2">
-                  {featured.title}
-                </h3>
-                <p className="text-blue-200 text-sm mb-3">{featured.subtitle}</p>
-                <p className="text-white/70 text-sm leading-relaxed max-w-xl mx-auto mb-4">
-                  {featured.description}
-                </p>
-                <div className="flex flex-wrap gap-2 justify-center">
-                  {featured.tags.map((tag, i) => (
-                    <span
-                      key={i}
-                      className="px-3 py-1 rounded-full text-xs bg-blue-500/20 border border-blue-400/30 text-blue-200"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </GlassCard>
-          </motion.div>
-        )}
 
-        {/* Other Achievements */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          {others.map((achievement, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.45, delay: 0.25 + index * 0.1, ease: "easeOut" }}
-            >
-              <GlassCard hover sweepDelay={DELAYS[index % DELAYS.length]} className="h-full">
-                <div className="flex flex-col items-center text-center">
-                  <div className="w-14 h-14 rounded-2xl bg-white/[0.08] border border-white/10 flex items-center justify-center mb-3">
-                    {iconForAchievement(achievement.title)}
-                  </div>
-                  <h4 className="text-white font-semibold mb-1">{achievement.title}</h4>
-                  <p className="text-blue-200 text-xs mb-2">{achievement.subtitle}</p>
-                  <p className="text-white/60 text-xs leading-relaxed mb-3">{achievement.description}</p>
-                  <div className="flex flex-wrap gap-1 justify-center">
-                    {achievement.tags.map((tag, i) => (
+                  {/* Title */}
+                  <h3 className="text-3xl md:text-4xl font-bold text-white mb-3 drop-shadow-lg">
+                    {featured.title}
+                  </h3>
+                  
+                  {/* Subtitle */}
+                  <p className="text-blue-200 text-lg md:text-xl font-semibold mb-4 drop-shadow">
+                    {featured.subtitle}
+                  </p>
+                  
+                  {/* Description */}
+                  <p className="text-white/90 text-sm md:text-base leading-relaxed max-w-2xl mx-auto mb-6 drop-shadow">
+                    {featured.description}
+                  </p>
+                  
+                  {/* Tags */}
+                  <div className="flex flex-wrap gap-2 justify-center">
+                    {featured.tags.map((tag, i) => (
                       <span
                         key={i}
-                        className="px-2 py-0.5 rounded-full text-xs bg-white/10 border border-white/20 text-white/60"
+                        className="px-4 py-2 rounded-full text-sm font-medium bg-white/10 backdrop-blur-md border border-white/30 text-white shadow-lg hover:bg-white/20 hover:border-white/40 transition-all duration-300"
                       >
                         {tag}
                       </span>
                     ))}
                   </div>
                 </div>
-              </GlassCard>
+              </div>
+
+              {/* CSS for sweep animation */}
+              <style>{`
+                @keyframes sweep {
+                  0% {
+                    background-position: -200% 0;
+                  }
+                  100% {
+                    background-position: 200% 0;
+                  }
+                }
+              `}</style>
+            </div>
+          </motion.div>
+        )}
+
+        {/* Other Achievements */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          {others.map((achievement, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.45, delay: 0.25 + index * 0.1, ease: "easeOut" }}
+              className="group"
+            >
+              {/* Enhanced GlassCard with continuous sweep */}
+              <div className="relative h-full min-h-[300px] rounded-3xl border border-white/[0.08] overflow-hidden transition-all duration-300 hover:shadow-[0_0_44px_rgba(59,130,246,0.30)] hover:-translate-y-0.5 hover:border-white/[0.16]">
+                {/* Background Image (if available) */}
+                {achievement.image ? (
+                  <>
+                    <img
+                      src={achievement.image}
+                      alt={achievement.title}
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+                      onError={(e) => {
+                        (e.currentTarget as HTMLImageElement).style.display = "none";
+                      }}
+                    />
+                    {/* Gradient Overlay - Dark for text readability */}
+                    <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/60 to-black/80 transition-opacity duration-500 group-hover:via-black/65 group-hover:to-black/85" />
+                  </>
+                ) : (
+                  /* Solid background for cards without images */
+                  <div className="absolute inset-0 backdrop-blur-2xl bg-white/[0.05]" />
+                )}
+
+                {/* Top-edge inner highlight line */}
+                <div className="absolute top-0 left-10 right-10 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
+
+                {/* Hover gradient overlay */}
+                <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-blue-500/[0.08] via-transparent to-purple-500/[0.08] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+
+                {/* Continuous Light Sweep Animation */}
+                <div 
+                  className="absolute inset-0 opacity-30 group-hover:opacity-50 transition-opacity duration-500 pointer-events-none"
+                  style={{
+                    animation: 'sweep-continuous 4s linear infinite',
+                    animationDelay: `${index * 0.5}s`,
+                    background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.05) 40%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.05) 60%, transparent 100%)',
+                    backgroundSize: '200% 100%',
+                  }}
+                />
+
+                {/* Content with backdrop blur for image cards */}
+                <div className={`flex flex-col items-center justify-center text-center relative z-10 h-full p-6 ${achievement.image ? 'backdrop-blur-sm' : ''}`}>
+                  <div className={`w-14 h-14 rounded-2xl ${achievement.image ? 'bg-white/10 backdrop-blur-md border border-white/20' : 'bg-white/[0.08] border border-white/10'} flex items-center justify-center mb-3`}>
+                    {iconForAchievement(achievement.title)}
+                  </div>
+                  <h4 className={`font-semibold mb-1 ${achievement.image ? 'text-white text-lg' : 'text-white'}`}>
+                    {achievement.title}
+                  </h4>
+                  <p className={`text-xs mb-2 ${achievement.image ? 'text-blue-200' : 'text-blue-200'}`}>
+                    {achievement.subtitle}
+                  </p>
+                  <p className={`text-xs leading-relaxed mb-3 ${achievement.image ? 'text-white/90 drop-shadow' : 'text-white/60'}`}>
+                    {achievement.description}
+                  </p>
+                  <div className="flex flex-wrap gap-1 justify-center">
+                    {achievement.tags.map((tag, i) => (
+                      <span
+                        key={i}
+                        className={`px-2 py-0.5 rounded-full text-xs ${achievement.image ? 'bg-white/10 backdrop-blur-md border border-white/30 text-white' : 'bg-white/10 border border-white/20 text-white/60'}`}
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* CSS for sweep animation */}
+                <style>{`
+                  @keyframes sweep-continuous {
+                    0% {
+                      background-position: -200% 0;
+                    }
+                    100% {
+                      background-position: 200% 0;
+                    }
+                  }
+                `}</style>
+              </div>
             </motion.div>
           ))}
         </div>

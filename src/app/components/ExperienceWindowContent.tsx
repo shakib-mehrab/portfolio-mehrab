@@ -1,26 +1,27 @@
 import { useState } from "react";
-import { Users, Video, Camera, Palette, Mic, Calendar, Briefcase } from "lucide-react";
+import { Users, Video, Camera, Palette, Mic, Calendar, Briefcase, ExternalLink } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { GlassCard } from "./GlassCard";
-import { leadershipRoles, organizingRoles, additionalSkills } from "../../data/experience";
+import { workExperience, leadershipRoles, organizingRoles, additionalSkills } from "../../data/experience";
 
 const iconMap: Record<string, LucideIcon> = { Video, Camera, Palette, Mic };
 
-type Tab = "leadership" | "organizing" | "additional";
+type Tab = "work" | "leadership" | "organizing" | "additional";
 
 const DELAYS = ["0s", "0.5s", "1.0s", "1.5s", "2.0s"];
 
 export function ExperienceWindowContent() {
-  const [activeTab, setActiveTab] = useState<Tab>("leadership");
+  const [activeTab, setActiveTab] = useState<Tab>("work");
 
   const tabs: { id: Tab; label: string }[] = [
+    { id: "work", label: "Work Experience" },
     { id: "leadership", label: "Leadership" },
     { id: "organizing", label: "Organizing" },
     { id: "additional", label: "Additional Skills" },
   ];
 
-  const roles = activeTab === "leadership" ? leadershipRoles : organizingRoles;
+  const roles = activeTab === "work" ? workExperience : activeTab === "leadership" ? leadershipRoles : organizingRoles;
 
   return (
     <div className="p-6 overflow-auto h-full">
@@ -39,7 +40,7 @@ export function ExperienceWindowContent() {
             </h2>
           </div>
           <div className="mt-2 mx-auto h-0.5 w-24 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full" />
-          <p className="text-white/50 text-sm mt-2">Leadership, organizing, and additional expertise</p>
+          <p className="text-white/50 text-sm mt-2">Work experience, leadership, organizing, and additional expertise</p>
         </motion.div>
 
         {/* Tabs */}
@@ -65,7 +66,7 @@ export function ExperienceWindowContent() {
         </motion.div>
 
         <AnimatePresence mode="wait">
-          {(activeTab === "leadership" || activeTab === "organizing") && (
+          {(activeTab === "work" || activeTab === "leadership" || activeTab === "organizing") && (
             <motion.div
               key={activeTab}
               initial={{ opacity: 0, y: 16 }}
@@ -77,7 +78,7 @@ export function ExperienceWindowContent() {
               <div className="flex items-center gap-2 mb-2">
                 <Users className="w-4 h-4 text-blue-300" />
                 <span className="text-white/50 text-sm">
-                  {activeTab === "leadership" ? `${leadershipRoles.length} Roles` : `${organizingRoles.length} Events`}
+                  {activeTab === "work" ? `${workExperience.length} Projects` : activeTab === "leadership" ? `${leadershipRoles.length} Roles` : `${organizingRoles.length} Events`}
                 </span>
               </div>
               {roles.map((role, index) => (
@@ -92,8 +93,21 @@ export function ExperienceWindowContent() {
                       <div className="w-1 flex-shrink-0 bg-gradient-to-b from-blue-400 to-purple-400 rounded-l-3xl" />
                       <div className="p-5 flex-1">
                         <div className="flex flex-wrap items-start justify-between gap-2 mb-2">
-                          <div>
-                            <h3 className="text-white font-semibold">{role.title}</h3>
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <h3 className="text-white font-semibold">{role.title}</h3>
+                              {role.link && (
+                                <a
+                                  href={role.link}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="inline-flex items-center gap-1 text-blue-300 hover:text-blue-200 transition-colors duration-200"
+                                  aria-label={`Visit ${role.title}`}
+                                >
+                                  <ExternalLink className="w-3.5 h-3.5" />
+                                </a>
+                              )}
+                            </div>
                             <p className="text-blue-200 text-sm">{role.organization}</p>
                           </div>
                           <div className="flex items-center gap-1 text-white/40 text-xs flex-shrink-0">

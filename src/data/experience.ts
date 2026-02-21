@@ -3,7 +3,8 @@ export interface ExperienceRole {
   organization: string;
   period: string;
   description: string;
-  type: "leadership" | "organizing" | "additional";
+  type: "work" | "leadership" | "organizing" | "additional";
+  link?: string;
 }
 
 export interface AdditionalSkillGroup {
@@ -13,56 +14,116 @@ export interface AdditionalSkillGroup {
   tools: string[];
 }
 
+export const workExperience: ExperienceRole[] = [
+  {
+    title: "CSEFEST Website Development",
+    organization: "Department of CSE, Comilla University",
+    period: "2025",
+    description:
+      "Developed the official website for CSEFEST, the biggest event of the Department of Computer Science and Engineering. Created a comprehensive platform for event registration, scheduling, and information management.",
+    type: "work",
+    link: "https://csefest.com",
+  },
+  {
+    title: "Collaborative Project Development",
+    organization: "Multi-University Team Projects",
+    period: "2024 – 2025",
+    description:
+      "Participated in various group projects collaborating with teams from different universities across Bangladesh. Worked on full-stack web applications, implementing modern development practices and agile methodologies.",
+    type: "work",
+  },
+  {
+    title: "SUST Karate Club Website",
+    organization: "Shahjalal University of Science and Technology",
+    period: "2024",
+    description:
+      "Contributed to building the official website for SUST Karate Club, designing and implementing features for member management, event showcasing, and club information display.",
+    type: "work",
+  },
+];
+
 export const leadershipRoles: ExperienceRole[] = [
   {
-    title: "Tech Club President",
-    organization: "University Tech Society",
-    period: "2023 – Present",
+    title: "General Secretary",
+    organization: "Comilla University IT Society",
+    period: "2025 – Present",
     description:
-      "Leading a 50+ member tech society, organizing workshops, hackathons, and industry connect sessions. Grew club membership by 80% and established partnerships with 5 local tech companies.",
+      "Leading the IT Society of Comilla University, organizing tech workshops, coding competitions, and industry talks. Successfully increased member engagement by 40% through innovative events and collaborations.",
     type: "leadership",
   },
   {
-    title: "Project Lead",
-    organization: "Final Year Project",
+    title: "Former General Secretary (Elected)",
+    organization: "CSE Society - Comilla University",
+    period: "2024 – 2025",
+    description:
+      "Led the Computer Science and Engineering Society of Comilla University, organizing academic events, guest lectures, and technical workshops. Increased student participation in CSE-related activities by 50%.",
+    type: "leadership",
+  },
+  {
+    title: "Deputy Lead - Technical Team",
+    organization: "TEDx Comilla University",
+    period: "Season 1 (2024) & Season 2 (2025)",
+    description:
+      "Spearheaded the technical operations for TEDx events at Comilla University, managing audio-visual setups, live streaming, and event logistics. Ensured seamless execution of 2 successful TEDx events with over 200 attendees each.",
+    type: "leadership",
+  },
+  {
+    title: "Convenor",
+    organization: "BASIS Student Forum CoU Chapter",
     period: "2024 – Present",
     description:
-      "Directing a multidisciplinary capstone project team of 4, managing sprint planning, code reviews, and stakeholder presentations. Applying agile methodology throughout a full product development cycle.",
+      "Leading the BASIS Student Forum chapter at Comilla University, fostering a community of aspiring tech professionals. Organized workshops on emerging technologies and facilitated networking opportunities with industry leaders.",
     type: "leadership",
   },
   {
-    title: "Mentor",
-    organization: "Code for Beginners Program",
-    period: "2022 – Present",
+    title: "Convener",
+    organization: "Startup Bangladesh - University Chapter",
+    period: "2024 – Present",
     description:
-      "Mentoring 15+ junior students in programming fundamentals, web development, and career growth. Created structured learning paths that helped 8 mentees secure their first internships.",
+      "Leading the University Chapter of Startup Bangladesh, promoting entrepreneurship and innovation among students. Organized pitch competitions, startup bootcamps, and mentorship sessions to nurture the next generation of entrepreneurs.",
+    type: "leadership",
+  },
+  {
+    title: "Campus Ambassador",
+    organization: "Pioneer Alpha",
+    period: "2024 – 2025",
+    description:
+      "Represented Pioneer Alpha at Comilla University, promoting their AI-powered learning platform. Organized webinars and workshops to introduce students to the platform's features and benefits, resulting in a 30% increase in student sign-ups.",
     type: "leadership",
   },
 ];
 
 export const organizingRoles: ExperienceRole[] = [
   {
-    title: "DevFest 2024 — Co-Organizer",
-    organization: "Google Developer Groups",
-    period: "October 2024",
+    title: "CSE Fest 2025 — Chief Coordinator",
+    organization: "Department of CSE, Comilla University",
+    period: "2025",
     description:
-      "Co-organized DevFest 2024 with 500+ attendees. Managed speaker coordination, venue logistics, sponsorship outreach, and the day-of volunteer team.",
+      "Led the entire CSE Fest 2025, the biggest event of the year for the Department of Computer Science and Engineering. Coordinated Regional Programming Contest, Sports Week, Cultural Week, and other activities as General Secretary of CSE Society.",
     type: "organizing",
   },
   {
-    title: "Hackathon Season 3 — Event Manager",
-    organization: "University Tech Society",
-    period: "August 2024",
+    title: "CoU IT Society IT Fest Inter University Programming Contest — Head Organizer",
+    organization: "Comilla University IT Society",
+    period: "2025",
     description:
-      "End-to-end management of a 24-hour hackathon with 200+ participants across 60 teams. Oversaw problem statement design, judging panel, prize distribution, and live streaming.",
+      "Organized a national level inter-university programming competition as the head of the organizing team. Managed participant registration, problem setting, judging, and logistics for teams from universities across Bangladesh.",
     type: "organizing",
   },
   {
-    title: "Tech Workshop Series — Program Coordinator",
-    organization: "University CS Department",
-    period: "2023 – 2024",
+    title: "TEDxCoU — Deputy Lead (2 Seasons)",
+    organization: "TEDx Comilla University",
+    period: "Season 1 (2024) & Season 2 (2025)",
     description:
-      "Coordinated a semester-long series of 12 technical workshops covering React, cloud computing, and DevOps. Secured industry speakers and managed a ৳50,000 budget.",
+      "Organized TEDx events for 2 consecutive seasons as Deputy Lead. Managed technical operations, speaker coordination, venue setup, and ensured flawless execution of both events with 200+ attendees each.",
+    type: "organizing",
+  },
+  {
+    title: "CoU Inter University Programming Contest 2023 — Organizing Member",
+    organization: "Department of CSE, Comilla University",
+    period: "2023",
+    description:
+      "Served as an organizing member for the inter-university programming contest hosted by the Department of Computer Science and Engineering. A national level competitive programming contest that brought together talented programmers from across the country.",
     type: "organizing",
   },
 ];
@@ -72,24 +133,24 @@ export const additionalSkills: AdditionalSkillGroup[] = [
     category: "Video Editing",
     iconName: "Video",
     color: "from-red-500 to-pink-500",
-    tools: ["Adobe Premiere Pro", "DaVinci Resolve", "After Effects"],
+    tools: ["Adobe Premiere Pro", "DaVinci Resolve", "After Effects", "CapCut"],
   },
   {
     category: "Photography",
     iconName: "Camera",
     color: "from-blue-500 to-indigo-500",
-    tools: ["Event", "Portrait", "Product"],
+    tools: ["Event", "Portrait", "Product","Landscape", "Conceptual"],
   },
   {
     category: "Creative Design",
     iconName: "Palette",
     color: "from-purple-500 to-pink-500",
-    tools: ["Figma", "Photoshop", "Illustrator"],
+    tools: ["Figma", "Photoshop", "Illustrator", "Canva"],
   },
   {
     category: "Public Speaking",
     iconName: "Mic",
     color: "from-green-500 to-teal-500",
-    tools: ["Tech Talks", "Workshops", "Presentations"],
+    tools: ["Tech Talks", "Workshops", "Presentations", "Storytelling"],
   },
 ];
