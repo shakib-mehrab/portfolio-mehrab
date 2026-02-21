@@ -99,8 +99,23 @@ export function AchievementsWindowContent() {
                     transition={{ duration: 0.5, delay: 0.3, type: "spring", stiffness: 180 }}
                     className="inline-flex mb-6"
                   >
-                    <div className="w-24 h-24 rounded-3xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-xl">
-                      {iconForAchievement(featured.title)}
+                    <div className="relative overflow-hidden p-2" style={{ filter: 'drop-shadow(0 10px 40px rgba(255, 255, 255, 0.4)) drop-shadow(0 0 20px rgba(255, 255, 255, 0.3))' }}>
+                      {/* Enhanced Glassmorphism shadow background */}
+                      <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-white/10 to-white/5 backdrop-blur-2xl border border-white/30" />
+                      {featured.icon ? (
+                        <img
+                          src={featured.icon}
+                          alt={`${featured.title} icon`}
+                          className="h-24 w-auto object-contain relative z-10"
+                          onError={(e) => {
+                            (e.currentTarget as HTMLImageElement).style.display = "none";
+                          }}
+                        />
+                      ) : (
+                        <div className="w-24 h-24 flex items-center justify-center relative z-10">
+                          {iconForAchievement(featured.title)}
+                        </div>
+                      )}
                     </div>
                   </motion.div>
 
@@ -198,8 +213,30 @@ export function AchievementsWindowContent() {
 
                 {/* Content with backdrop blur for image cards */}
                 <div className={`flex flex-col items-center justify-center text-center relative z-10 h-full p-6 ${achievement.image ? 'backdrop-blur-sm' : ''}`}>
-                  <div className={`w-14 h-14 rounded-2xl ${achievement.image ? 'bg-white/10 backdrop-blur-md border border-white/20' : 'bg-white/[0.08] border border-white/10'} flex items-center justify-center mb-3`}>
-                    {iconForAchievement(achievement.title)}
+                  <div className="relative overflow-hidden mb-3 p-1.5" style={{ filter: 'drop-shadow(0 6px 20px rgba(255, 255, 255, 0.3)) drop-shadow(0 0 12px rgba(255, 255, 255, 0.2))' }}>
+                    {/* Enhanced Glassmorphism shadow background */}
+                    <div className={`absolute inset-0 ${achievement.image ? 'bg-gradient-to-br from-white/20 via-white/12 to-white/5 backdrop-blur-xl border border-white/40' : 'bg-gradient-to-br from-white/15 via-white/8 to-white/5 backdrop-blur-lg border border-white/20'}`} />
+                    {achievement.icon ? (
+                      <img
+                        src={achievement.icon}
+                        alt={`${achievement.title} icon`}
+                        className="h-14 w-auto object-contain relative z-10"
+                        onError={(e) => {
+                          (e.currentTarget as HTMLImageElement).style.display = "none";
+                          const parent = e.currentTarget.parentElement;
+                          if (parent) {
+                            parent.innerHTML = '';
+                            const icon = document.createElement('div');
+                            icon.className = 'w-full h-full flex items-center justify-center';
+                            parent.appendChild(icon);
+                          }
+                        }}
+                      />
+                    ) : (
+                      <div className="w-14 h-14 flex items-center justify-center relative z-10">
+                        {iconForAchievement(achievement.title)}
+                      </div>
+                    )}
                   </div>
                   <h4 className={`font-semibold mb-1 ${achievement.image ? 'text-white text-lg' : 'text-white'}`}>
                     {achievement.title}

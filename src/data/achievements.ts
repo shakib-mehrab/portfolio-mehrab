@@ -8,6 +8,7 @@ export interface Achievement {
   featured?: boolean;
   iconColor: string;
   image?: string;
+  icon?: string;
 }
 
 export const achievements: Achievement[] = [
@@ -22,6 +23,7 @@ export const achievements: Achievement[] = [
     featured: true,
     iconColor: "text-blue-400",
     image: "images/achievements/NasaSpace.jpg",
+    icon: "images/achievements/icons/nasa.jpg",
   },
   {
     title: "SOLVIO AI Hackathon 2025",
@@ -34,6 +36,7 @@ export const achievements: Achievement[] = [
     featured: false,
     iconColor: "text-yellow-400",
     image: "images/achievements/Solvio.png",
+    icon: "images/achievements/icons/solvio.png",
   },
   // {
   //   title: "Research Publication 2023",
@@ -49,13 +52,14 @@ export const achievements: Achievement[] = [
   {
     title: "Bangladesh Blockchain Olympiad 2024",
     subtitle: "Finalist — National Level",
-    organization: "BUBT IT Club",
+    organization: "ICT Division",
     date: "2025",
     description:
-      "Achieved a top 12 position in a prestigious national hackathon, showcasing innovative problem-solving skills and teamwork. Developed a functional prototype addressing real-world challenges within a limited timeframe.",
-    tags: ["Top 12", "National"],
+      "Participated in the national-level Bangladesh Blockchain Olympiad, securing a finalist position among teams from across the country.",
+    tags: ["Finalist", "National"],
     featured: false,
     iconColor: "text-green-400",
     image: "images/achievements/BUBT.png",
+    icon: "images/achievements/icons/olympiadicon.png",
   },
 ];

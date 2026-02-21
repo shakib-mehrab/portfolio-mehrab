@@ -41,6 +41,7 @@ interface OpenWindow {
   position: { x: number; y: number };
   size: { width: number; height: number };
   isMaximized: boolean;
+  isMinimized: boolean;
 }
 
 export default function App() {
@@ -53,6 +54,7 @@ export default function App() {
       position: getCenterPosition(800, 500),
       size: { width: 800, height: 500 },
       isMaximized: false,
+      isMinimized: false,
     },
   ]);
 
@@ -176,6 +178,7 @@ export default function App() {
         position: { x: 150, y: 80 },
         size: { width: 900, height: 600 },
         isMaximized: false,
+        isMinimized: false,
       },
       education: {
         title: "Education",
@@ -184,6 +187,7 @@ export default function App() {
         position: { x: 200, y: 100 },
         size: { width: 850, height: 600 },
         isMaximized: false,
+        isMinimized: false,
       },
       skills: {
         title: "Skills",
@@ -192,6 +196,7 @@ export default function App() {
         position: { x: 180, y: 90 },
         size: { width: 1000, height: 650 },
         isMaximized: false,
+        isMinimized: false,
       },
       projects: {
         title: "Projects",
@@ -200,6 +205,7 @@ export default function App() {
         position: { x: 160, y: 70 },
         size: { width: 1100, height: 700 },
         isMaximized: false,
+        isMinimized: false,
       },
       achievements: {
         title: "Achievements",
@@ -208,6 +214,7 @@ export default function App() {
         position: { x: 220, y: 110 },
         size: { width: 900, height: 600 },
         isMaximized: false,
+        isMinimized: false,
       },
       cocurriculars: {
         title: "Co-Curricular Activities",
@@ -216,6 +223,7 @@ export default function App() {
         position: { x: 190, y: 95 },
         size: { width: 900, height: 600 },
         isMaximized: false,
+        isMinimized: false,
       },
       contact: {
         title: "Contact Me",
@@ -224,6 +232,7 @@ export default function App() {
         position: { x: 170, y: 85 },
         size: { width: 950, height: 650 },
         isMaximized: false,
+        isMinimized: false,
       },
       resume: {
         title: "Resume",
@@ -249,6 +258,7 @@ export default function App() {
         position: { x: 300, y: 150 },
         size: { width: 600, height: 400 },
         isMaximized: false,
+        isMinimized: false,
       },
       recycle: {
         title: "Recycle Bin",
@@ -267,6 +277,7 @@ export default function App() {
         position: { x: 350, y: 180 },
         size: { width: 500, height: 400 },
         isMaximized: false,
+        isMinimized: false,
       },
       experience: {
         title: "Experience",
@@ -275,6 +286,7 @@ export default function App() {
         position: { x: 170, y: 80 },
         size: { width: 950, height: 650 },
         isMaximized: false,
+        isMinimized: false,
       },
       awards: {
         title: "Certifications",
@@ -283,6 +295,7 @@ export default function App() {
         position: { x: 190, y: 100 },
         size: { width: 1050, height: 700 },
         isMaximized: false,
+        isMinimized: false,
       },
     };
 
@@ -293,7 +306,13 @@ export default function App() {
         ...config,
         position: getCenterPosition(config.size.width, config.size.height),
       };
-      setOpenWindows([...openWindows, newWindow]);
+      
+      // Remove welcome window and add new window in single state update
+      const updatedWindows = iconId !== "welcome" 
+        ? openWindows.filter((w) => w.id !== "welcome")
+        : openWindows;
+      
+      setOpenWindows([...updatedWindows, newWindow]);
       setActiveWindowId(iconId);
     }
   };
@@ -312,6 +331,32 @@ export default function App() {
         w.id === windowId ? { ...w, isMaximized: !w.isMaximized } : w
       )
     );
+  };
+
+  const minimizeWindow = (windowId: string) => {
+    setOpenWindows(
+      openWindows.map((w) =>
+        w.id === windowId ? { ...w, isMinimized: true } : w
+      )
+    );
+  };
+
+  const restoreWindow = (windowId: string) => {
+    setOpenWindows(
+      openWindows.map((w) =>
+        w.id === windowId ? { ...w, isMinimized: false } : w
+      )
+    );
+    setActiveWindowId(windowId);
+  };
+
+  const handleTaskbarClick = (windowId: string) => {
+    const window = openWindows.find((w) => w.id === windowId);
+    if (window?.isMinimized) {
+      restoreWindow(windowId);
+    } else {
+      setActiveWindowId(windowId);
+    }
   };
 
   return (
@@ -341,7 +386,9 @@ export default function App() {
       </div>
 
       {/* Windows */}
-      {openWindows.map((window, index) => (
+      {openWindows
+        .filter((window) => !window.isMinimized)
+        .map((window, index) => (
         <AeroWindow
           key={window.id}
           title={window.title}
@@ -349,9 +396,7 @@ export default function App() {
           defaultPosition={window.position}
           defaultSize={window.size}
           onClose={() => closeWindow(window.id)}
-          onMinimize={() => {
-            /* Minimize functionality */
-          }}
+          onMinimize={() => minimizeWindow(window.id)}
           onMaximize={() => toggleMaximize(window.id)}
           isActive={activeWindowId === window.id}
           onFocus={() => setActiveWindowId(window.id)}
@@ -370,7 +415,7 @@ export default function App() {
           icon: w.icon,
         }))}
         activeWindow={activeWindowId}
-        onWindowClick={(id) => setActiveWindowId(id)}
+        onWindowClick={handleTaskbarClick}
         onStartMenuItemClick={(item) => openWindow(item)}
       />
     </div>

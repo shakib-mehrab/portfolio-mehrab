@@ -24,7 +24,7 @@ export function DesktopIcon({ icon, label, onClick, isOpen = false }: DesktopIco
       whileHover={{ scale: 1.06, y: -2 }}
       whileTap={{ scale: 0.95 }}
       transition={{ type: "spring", stiffness: 350, damping: 20 }}
-      className={`w-20 h-24 flex flex-col items-center justify-center gap-1.5 p-2 rounded-xl cursor-pointer group transition-colors duration-200 ${
+      className={`w-24 h-28 flex flex-col items-center justify-center gap-1.5 p-2 rounded-xl cursor-pointer group transition-colors duration-200 ${
         isActive
           ? "backdrop-blur-xl bg-white/25 border-2 border-white/50 shadow-[0_0_16px_rgba(59,130,246,0.4)]"
           : "border-2 border-transparent hover:bg-white/15 hover:border-white/30 hover:backdrop-blur-lg"
@@ -52,7 +52,7 @@ export function DesktopIcon({ icon, label, onClick, isOpen = false }: DesktopIco
         </div>
       </div>
 
-      <span className="text-[11px] text-white text-center leading-tight font-medium break-words max-w-full px-0.5 text-shadow-desktop-icon">
+      <span className="text-[11px] text-white text-center leading-tight font-medium max-w-full px-0.5 text-shadow-desktop-icon">
         {label}
       </span>
     </motion.button>
