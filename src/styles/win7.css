@@ -1,0 +1,1373 @@
+/*
+ * Mehrab 7 — an Aero-era desktop, rebuilt from memory.
+ * Every surface here is modelled on a real Windows 7 control: glass frame,
+ * caption buttons, command bar, navigation pane, push buttons, scrollbars.
+ * The glass tint comes from --glass-rgb so Personalize can recolour everything.
+ */
+
+@layer components {
+  :root {
+    --glass-rgb: 116 184 252;
+    --glass-alpha: 0.5;
+    --ui-font: "Segoe UI", "Open Sans", Tahoma, "Hind Siliguri", system-ui, sans-serif;
+    --hand-font: "Segoe Print", "Patrick Hand", "Comic Sans MS", cursive;
+    --mono-font: Consolas, "Lucida Console", "Courier New", monospace;
+
+    --w7-text: #1e1e1e;
+    --w7-link: #0066cc;
+    --w7-heading: #1e3287;
+    --w7-muted: #5a5a5a;
+    --w7-nav-text: #1e395b;
+    --w7-face: #f0f0f0;
+    --w7-border: #a0afc3;
+    --taskbar-h: 40px;
+  }
+
+  html, body, #root {
+    height: 100%;
+  }
+
+  body {
+    margin: 0;
+    font-family: var(--ui-font);
+    font-size: 12px;
+    color: var(--w7-text);
+    background: #0d2c57;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Undo the template's 16px base sizing for controls; zero specificity so any class wins */
+  :where(.w7) :where(button, input, label, textarea, h1, h2, h3, h4) {
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+  }
+
+  .w7 :focus-visible {
+    outline: 1px dotted #000;
+    outline-offset: 1px;
+  }
+
+  /* ---------- Glass ---------- */
+
+  .w7-glass {
+    background:
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0) 34px),
+      linear-gradient(112deg,
+        transparent 0 9%, rgba(255, 255, 255, 0.13) 10% 13%, transparent 14% 31%,
+        rgba(255, 255, 255, 0.08) 32% 33.5%, transparent 34.5% 57%,
+        rgba(255, 255, 255, 0.12) 58% 62%, transparent 63% 81%,
+        rgba(255, 255, 255, 0.07) 82% 83%, transparent 84%),
+      rgb(var(--glass-rgb) / var(--glass-alpha));
+    -webkit-backdrop-filter: blur(9px) saturate(1.4);
+    backdrop-filter: blur(9px) saturate(1.4);
+  }
+
+  /* ---------- Window frame ---------- */
+
+  .w7-window {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    padding: 0 7px 7px;
+    border: 1px solid rgba(0, 0, 0, 0.62);
+    border-radius: 8px 8px 6px 6px;
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 255, 255, 0.55),
+      0 6px 26px 2px rgba(0, 0, 0, 0.55);
+    touch-action: none;
+  }
+
+  .w7-window.is-inactive {
+    --glass-alpha: 0.28;
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 255, 255, 0.4),
+      0 3px 14px rgba(0, 0, 0, 0.35);
+  }
+
+  .w7-window.is-maximized {
+    border-radius: 0;
+    padding: 0;
+    border-width: 0;
+  }
+
+  .w7-titlebar {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    height: 30px;
+    padding: 0 110px 0 2px;
+    cursor: default;
+    user-select: none;
+    flex-shrink: 0;
+  }
+
+  .w7-window.is-maximized .w7-titlebar {
+    height: 24px;
+    padding-left: 6px;
+  }
+
+  .w7-title {
+    font-size: 12.5px;
+    color: #000;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    /* Windows 7 never drew white title text: it drew black text on a soft white fog */
+    text-shadow:
+      0 0 10px #fff, 0 0 10px #fff, 0 0 6px #fff, 0 0 2px #fff;
+    padding: 0 6px;
+  }
+
+  .w7-window.is-inactive .w7-title {
+    color: #3c3c3c;
+  }
+
+  /* Caption buttons hang from the top edge, joined, with rounded bottoms */
+  .w7-caps {
+    position: absolute;
+    top: -1px;
+    right: 0;
+    display: flex;
+    border: 1px solid rgba(0, 0, 0, 0.55);
+    border-top: 0;
+    border-radius: 0 0 5px 5px;
+    overflow: hidden;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.55), inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+  }
+
+  .w7-window.is-maximized .w7-caps {
+    right: 2px;
+  }
+
+  .w7-cap {
+    display: grid;
+    place-items: center;
+    width: 27px;
+    height: 19px;
+    padding: 0;
+    border: 0;
+    border-right: 1px solid rgba(0, 0, 0, 0.45);
+    background: linear-gradient(to bottom,
+      rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.28) 45%,
+      rgba(255, 255, 255, 0.06) 50%, rgba(255, 255, 255, 0.22));
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+    cursor: default;
+    transition: background-color 0.15s, box-shadow 0.2s;
+  }
+
+  .w7-cap svg {
+    filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 1px rgba(0, 0, 0, 0.6));
+  }
+
+  .w7-cap:hover {
+    background: linear-gradient(to bottom, #c3e4fb, #79bdf0 45%, #2c88d6 50%, #5fd5f7);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.55), 0 0 8px #6cf;
+  }
+
+  .w7-cap:active {
+    background: linear-gradient(to bottom, #8cb6dc, #3d7cbb 45%, #134c8c 50%, #2aa6d6);
+  }
+
+  .w7-cap.is-close {
+    width: 47px;
+    border-right: 0;
+    background: linear-gradient(to bottom, #eab3a5, #d98a77 45%, #c3442b 50%, #d9846a);
+  }
+
+  .w7-window.is-inactive .w7-cap.is-close {
+    background: linear-gradient(to bottom,
+      rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.28) 45%,
+      rgba(255, 255, 255, 0.06) 50%, rgba(255, 255, 255, 0.22));
+  }
+
+  .w7-cap.is-close:hover {
+    background: linear-gradient(to bottom, #f7c2b4, #ec6d51 45%, #d4290d 50%, #f39b55);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5), 0 0 10px #f84;
+  }
+
+  .w7-cap.is-close:active {
+    background: linear-gradient(to bottom, #d79a8c, #b9472f 45%, #8e1904 50%, #c46a30);
+  }
+
+  .w7-client {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* The opaque part of a window sits inside the glass with a hairline highlight */
+  .w7-body {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.6);
+    overflow: hidden;
+  }
+
+  .w7-window.is-maximized .w7-body {
+    border-left: 0;
+    border-right: 0;
+    border-bottom: 0;
+  }
+
+  .w7-resize {
+    position: absolute;
+    z-index: 2;
+  }
+  .w7-resize.e { top: 8px; right: -4px; bottom: 8px; width: 9px; cursor: ew-resize; }
+  .w7-resize.s { left: 8px; right: 8px; bottom: -4px; height: 9px; cursor: ns-resize; }
+  .w7-resize.se { right: -4px; bottom: -4px; width: 16px; height: 16px; cursor: nwse-resize; }
+
+  .w7-snap-preview {
+    position: fixed;
+    z-index: 900;
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    border-radius: 6px;
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.3), 0 0 20px rgba(255, 255, 255, 0.3);
+    pointer-events: none;
+  }
+
+  /* ---------- Explorer chrome (lives on the glass) ---------- */
+
+  .w7-navrow {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 2px 0 6px;
+    flex-shrink: 0;
+  }
+
+  .w7-navbtns {
+    display: flex;
+    align-items: center;
+    gap: 1px;
+    padding: 1px;
+    border-radius: 14px;
+    background: linear-gradient(rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.05));
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.25);
+  }
+
+  /* The big round blue back / forward buttons */
+  .w7-orbbtn {
+    display: grid;
+    place-items: center;
+    width: 25px;
+    height: 25px;
+    padding: 0;
+    border-radius: 50%;
+    border: 1px solid #1b4e8c;
+    background:
+      radial-gradient(circle at 50% 120%, #8ef0ff 0%, rgba(142, 240, 255, 0) 55%),
+      linear-gradient(to bottom, #8cc2ee 0%, #3f8fd8 48%, #1360b8 52%, #2a83d4 100%);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.35);
+    cursor: default;
+    transition: filter 0.15s, box-shadow 0.15s;
+  }
+  .w7-orbbtn:hover:not(:disabled) {
+    filter: brightness(1.15) saturate(1.1);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 0 6px #7df;
+  }
+  .w7-orbbtn:active:not(:disabled) { filter: brightness(0.85); }
+  .w7-orbbtn:disabled {
+    filter: grayscale(1) brightness(1.15);
+    opacity: 0.6;
+  }
+
+  .w7-address {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    height: 24px;
+    padding: 0 4px;
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid rgba(0, 0, 0, 0.4);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(255, 255, 255, 0.45);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .w7-crumb {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    height: 20px;
+    padding: 0 4px;
+    border: 1px solid transparent;
+    border-radius: 2px;
+    background: none;
+    color: #000;
+    font: inherit;
+    white-space: nowrap;
+  }
+  .w7-crumb:hover {
+    border-color: #a8d3f5;
+    background: linear-gradient(#f4fafe, #d9eefc);
+  }
+  .w7-crumb-sep { color: #444; font-size: 10px; }
+
+  .w7-search {
+    display: flex;
+    align-items: center;
+    width: 200px;
+    height: 24px;
+    padding: 0 6px;
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid rgba(0, 0, 0, 0.4);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(255, 255, 255, 0.45);
+    border-radius: 2px;
+  }
+  .w7-search input {
+    flex: 1;
+    min-width: 0;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    font: inherit;
+    font-style: italic;
+    color: #222;
+  }
+  .w7-search input:not(:placeholder-shown) { font-style: normal; }
+
+  .w7-commandbar {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    height: 32px;
+    padding: 0 6px;
+    background: linear-gradient(to bottom, #fbfdff 0%, #f0f6fc 48%, #e4eef8 52%, #dce7f5 100%);
+    border-bottom: 1px solid #a0afc3;
+    box-shadow: inset 0 1px 0 #fff;
+    flex-shrink: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .w7-commandbar::-webkit-scrollbar { display: none; }
+
+  .w7-cmd {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    height: 24px;
+    padding: 0 7px;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    background: none;
+    color: var(--w7-nav-text);
+    font: inherit;
+    white-space: nowrap;
+    cursor: default;
+  }
+  .w7-cmd:hover:not(:disabled) {
+    border-color: #a5c6ea;
+    background: linear-gradient(to bottom, #fafdff, #e8f2fd 50%, #d8e8fa 51%, #e3eefb);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.8);
+  }
+  .w7-cmd:active:not(:disabled), .w7-cmd[aria-pressed="true"] {
+    border-color: #7c9ec6;
+    background: linear-gradient(to bottom, #d6e5f6, #c4d9f1);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
+  }
+  .w7-cmd:disabled { color: #8b98a8; }
+  .w7-cmd-sep { width: 1px; height: 18px; margin: 0 3px; background: #c5d1de; box-shadow: 1px 0 #fff; }
+
+  .w7-menubar {
+    display: flex;
+    gap: 1px;
+    padding: 1px 2px;
+    background: linear-gradient(#fdfeff, #e9eff7);
+    border-bottom: 1px solid #b6bccc;
+    flex-shrink: 0;
+  }
+  .w7-menubar span {
+    padding: 2px 7px;
+    border: 1px solid transparent;
+    border-radius: 2px;
+  }
+  .w7-menubar span:hover {
+    border-color: #a8d8eb;
+    background: linear-gradient(#f2f9fd, #dceffb);
+  }
+
+  .w7-explorer {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+  }
+
+  .w7-navpane {
+    width: 180px;
+    flex-shrink: 0;
+    padding: 8px 0;
+    background: #fff;
+    border-right: 1px solid #d6e1ee;
+    overflow-y: auto;
+  }
+  .w7-navgroup { margin-bottom: 12px; }
+  .w7-navitem {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: calc(100% - 8px);
+    margin: 0 4px;
+    height: 22px;
+    padding: 0 6px 0 var(--indent, 10px);
+    border: 1px solid transparent;
+    border-radius: 3px;
+    background: none;
+    color: var(--w7-nav-text);
+    font: inherit;
+    text-align: left;
+    white-space: nowrap;
+    cursor: default;
+  }
+  .w7-navitem.is-head { color: #1e395b; font-weight: 400; }
+
+  /* The Windows 7 selection: a soft blue pill with a crisp border */
+  .w7-hover:hover, .w7-navitem:hover {
+    border-color: #b8d6fb;
+    background: linear-gradient(to bottom, #fafbfd, #ebf3fd);
+  }
+  .w7-selected, .w7-selected:hover, .w7-navitem.is-active {
+    border-color: #84acdd !important;
+    background: linear-gradient(to bottom, #f2f8ff, #d0e5fb) !important;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.7);
+  }
+
+  .w7-content {
+    flex: 1;
+    min-width: 0;
+    overflow: auto;
+    background: #fff;
+  }
+
+  .w7-group-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 10px 12px 6px;
+    color: #1e3287;
+    font-size: 12.5px;
+  }
+  .w7-group-head::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, #c5d5ec, rgba(197, 213, 236, 0));
+  }
+
+  .w7-detailspane {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    min-height: 74px;
+    max-height: 40%;
+    padding: 8px 14px;
+    background: linear-gradient(to bottom, #f6f9fd, #e5eef8);
+    border-top: 1px solid #b8c7d9;
+    box-shadow: inset 0 1px 0 #fff;
+    overflow-y: auto;
+    flex-shrink: 0;
+  }
+  .w7-prop { display: flex; gap: 6px; line-height: 1.6; }
+  .w7-prop dt { color: #5a6779; min-width: 72px; }
+  .w7-prop dd { margin: 0; color: #000; }
+
+  .w7-statusbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    height: 22px;
+    padding: 0 10px;
+    color: #333;
+    background: linear-gradient(#f1f5fb, #dfe9f5);
+    border-top: 1px solid #b8c7d9;
+    flex-shrink: 0;
+  }
+
+  /* Blue task pane on the left of Control Panel pages */
+  .w7-taskpane {
+    width: 200px;
+    flex-shrink: 0;
+    padding: 14px 0 14px 16px;
+    background: linear-gradient(to bottom, #e6f0fa, #d3e2f4 60%, #c9daf1);
+    border-right: 1px solid #b6c9e2;
+    overflow-y: auto;
+  }
+  .w7-taskpane a, .w7-taskpane button {
+    display: block;
+    width: 100%;
+    margin: 0 0 7px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: #1e3287;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+  }
+  .w7-taskpane a:hover, .w7-taskpane button:hover {
+    color: #3399ff;
+    text-decoration: underline;
+  }
+  .w7-taskpane .is-current { font-weight: 700; color: #000; }
+  .w7-taskpane .w7-seealso {
+    margin: 18px 0 6px;
+    color: #4b5a70;
+  }
+
+  .w7-cp-heading {
+    margin: 0 0 14px;
+    color: var(--w7-heading);
+    font-size: 15px;
+    font-weight: 400;
+  }
+
+  .w7-section-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 18px 0 8px;
+    color: #000;
+    font-size: 12px;
+  }
+  .w7-section-head::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: #cfd8e3;
+  }
+
+  .w7-link {
+    color: var(--w7-link);
+    background: none;
+    border: 0;
+    padding: 0;
+    font: inherit;
+    cursor: pointer;
+    text-decoration: none;
+  }
+  .w7-link:hover { color: #3399ff; text-decoration: underline; }
+
+  /* Command link: the big green-arrow buttons from Windows 7 dialogs */
+  .w7-commandlink {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    background: none;
+    color: #151c55;
+    font: inherit;
+    font-size: 14px;
+    text-align: left;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .w7-commandlink small {
+    display: block;
+    margin-top: 1px;
+    color: #333;
+    font-size: 12px;
+  }
+  .w7-commandlink:hover {
+    border-color: #c6c6c6;
+    background: linear-gradient(#fff, #f2f2f2);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    color: #071b75;
+  }
+  .w7-commandlink .arrow {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    margin-top: 1px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: radial-gradient(circle at 50% 30%, #c7f4b4, #3fae2a 60%, #1f7a12);
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.25);
+    color: #fff;
+  }
+
+  /* ---------- Classic controls ---------- */
+
+  .w7-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-width: 75px;
+    height: 23px;
+    padding: 0 12px;
+    border: 1px solid #707070;
+    border-radius: 3px;
+    background: linear-gradient(to bottom, #f2f2f2 0%, #ebebeb 49%, #dddddd 50%, #cfcfcf 100%);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.8);
+    color: #000;
+    font: inherit;
+    text-decoration: none;
+    cursor: default;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .w7-button:hover:not(:disabled) {
+    border-color: #3c7fb1;
+    background: linear-gradient(to bottom, #eaf6fd 0%, #d9f0fc 49%, #bee6fd 50%, #a7d9f5 100%);
+  }
+  .w7-button:active:not(:disabled) {
+    border-color: #2c628b;
+    background: linear-gradient(to bottom, #e5f4fc 0%, #c4e5f6 49%, #98d1ef 50%, #68b3db 100%);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+  }
+  .w7-button.is-default {
+    border-color: #3399ff;
+    box-shadow: inset 0 0 0 1px #9fd5f7;
+  }
+  .w7-button:disabled {
+    color: #838383;
+    border-color: #adb2b5;
+    background: #f4f4f4;
+    box-shadow: none;
+  }
+
+  .w7-input, .w7-textarea {
+    width: 100%;
+    padding: 3px 5px;
+    border: 1px solid #abadb3;
+    border-top-color: #e3e9ef;
+    border-left-color: #e2e3ea;
+    border-right-color: #dbdfe6;
+    border-bottom-color: #e3e9ef;
+    border-radius: 2px;
+    background: #fff;
+    color: #000;
+    font: inherit;
+    outline: 0;
+    box-shadow: inset 0 1px 0 #abadb3;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .w7-input:hover, .w7-textarea:hover { border-color: #5794bf #c5daed #c5daed #b7d5ea; }
+  .w7-input:focus, .w7-textarea:focus {
+    border-color: #3d7bad #b5cfe7 #b5cfe7 #a4c9e3;
+    box-shadow: inset 0 1px 0 #3d7bad;
+  }
+
+  .w7-progress {
+    position: relative;
+    height: 15px;
+    border: 1px solid #b2b2b2;
+    border-radius: 3px;
+    background: linear-gradient(to bottom, #f3f3f3, #e3e3e3 50%, #d6d6d6 51%, #ececec);
+    overflow: hidden;
+  }
+  .w7-progress > i {
+    position: absolute;
+    inset: 0 auto 0 0;
+    background: linear-gradient(to bottom, #cff6c6 0%, #5ad94a 45%, #1eb41e 50%, #47d03c 100%);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.4);
+    overflow: hidden;
+  }
+  .w7-progress > i::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    width: 40%;
+    background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.75), transparent);
+    animation: w7-progress-sweep 2.4s linear infinite;
+  }
+
+  .w7-tabs {
+    display: flex;
+    gap: 0;
+    padding: 0 6px;
+    margin-bottom: -1px;
+    position: relative;
+    z-index: 1;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .w7-tab {
+    height: 22px;
+    margin-top: 2px;
+    padding: 0 10px;
+    border: 1px solid #898c95;
+    border-bottom: 0;
+    border-radius: 3px 3px 0 0;
+    margin-right: -1px;
+    background: linear-gradient(#f2f2f2, #ebebeb 49%, #dddddd 50%, #cfcfcf);
+    color: #000;
+    font: inherit;
+    white-space: nowrap;
+    cursor: default;
+  }
+  .w7-tab:hover { background: linear-gradient(#eaf6fd, #d9f0fc 49%, #bee6fd 50%, #a7d9f5); }
+  .w7-tab[aria-selected="true"] {
+    height: 25px;
+    margin-top: 0;
+    background: #fff;
+    position: relative;
+    z-index: 2;
+  }
+  .w7-tabpanel {
+    border: 1px solid #898c95;
+    background: #fff;
+    padding: 14px;
+  }
+
+  .w7-dialog-face {
+    background: var(--w7-face);
+  }
+
+  /* ---------- Scrollbars ---------- */
+
+  .w7 ::-webkit-scrollbar { width: 17px; height: 17px; }
+  .w7 ::-webkit-scrollbar-track {
+    background: linear-gradient(to right, #e6e6e6, #f3f3f3 30%, #f3f3f3 70%, #e6e6e6);
+  }
+  .w7 ::-webkit-scrollbar-track:horizontal {
+    background: linear-gradient(to bottom, #e6e6e6, #f3f3f3 30%, #f3f3f3 70%, #e6e6e6);
+  }
+  .w7 ::-webkit-scrollbar-thumb {
+    border: 1px solid #959595;
+    border-radius: 3px;
+    background:
+      linear-gradient(to right, #f3f3f3, #e8e8e8 49%, #d6d6d6 50%, #d0d0d0);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.85);
+  }
+  .w7 ::-webkit-scrollbar-thumb:horizontal {
+    background: linear-gradient(to bottom, #f3f3f3, #e8e8e8 49%, #d6d6d6 50%, #d0d0d0);
+  }
+  .w7 ::-webkit-scrollbar-thumb:hover {
+    border-color: #3c7fb1;
+    background: linear-gradient(to right, #e3f4fc, #d6eefb 49%, #a9dbf6 50%, #a4d4f0);
+  }
+  .w7 ::-webkit-scrollbar-corner { background: #f0f0f0; }
+
+  /* ---------- Desktop ---------- */
+
+  .w7-desktop {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    background-color: #0d3b78;
+    background-size: cover;
+    background-position: center;
+    transition: background-image 0.6s;
+  }
+
+  .w7-icons {
+    position: absolute;
+    top: 6px;
+    left: 4px;
+    bottom: calc(var(--taskbar-h) + 4px);
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-rows: repeat(auto-fill, 86px);
+    grid-auto-columns: 88px;
+    gap: 2px 4px;
+    align-content: start;
+  }
+
+  .w7-deskicon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    width: 86px;
+    height: 84px;
+    padding: 4px 2px 2px;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    background: none;
+    color: #fff;
+    font: inherit;
+    cursor: default;
+    user-select: none;
+  }
+  .w7-deskicon:hover {
+    border-color: rgba(185, 215, 252, 0.55);
+    background: linear-gradient(to bottom, rgba(220, 235, 252, 0.25), rgba(193, 219, 252, 0.18));
+  }
+  .w7-deskicon.is-selected {
+    border-color: rgba(132, 172, 221, 0.95);
+    background: linear-gradient(to bottom, rgba(220, 235, 252, 0.45), rgba(193, 219, 252, 0.35));
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+  }
+  .w7-deskicon:focus-visible { outline: 1px dotted #fff; outline-offset: -3px; }
+  .w7-deskicon span {
+    max-width: 100%;
+    font-size: 12px;
+    line-height: 1.2;
+    text-align: center;
+    text-shadow: 0 0 2px #000, 0 1px 2px #000, 0 1px 4px rgba(0, 0, 0, 0.9);
+    overflow-wrap: break-word;
+  }
+  .w7-deskicon svg, .w7-deskicon img {
+    filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.45));
+  }
+
+  /* ---------- Taskbar ---------- */
+
+  .w7-taskbar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+    height: var(--taskbar-h);
+    display: flex;
+    align-items: stretch;
+    background:
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.04) 50%, rgba(0, 0, 0, 0.12) 51%, rgba(0, 0, 0, 0.02)),
+      linear-gradient(rgba(12, 20, 32, 0.6), rgba(12, 20, 32, 0.6)),
+      rgb(var(--glass-rgb) / 0.4);
+    -webkit-backdrop-filter: blur(12px) saturate(1.3);
+    backdrop-filter: blur(12px) saturate(1.3);
+    border-top: 1px solid rgba(0, 0, 0, 0.6);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  }
+
+  .w7-orb {
+    position: relative;
+    width: 54px;
+    flex-shrink: 0;
+    border: 0;
+    padding: 0;
+    background: none;
+    cursor: default;
+  }
+  .w7-orb-ball {
+    position: absolute;
+    left: 7px;
+    top: -6px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 10, 30, 0.85);
+    background:
+      radial-gradient(circle at 50% 100%, rgba(120, 230, 255, 0.95), rgba(120, 230, 255, 0) 55%),
+      radial-gradient(circle at 50% 38%, #3b8ad8, #12417f 62%, #08254f);
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 255, 255, 0.35),
+      0 0 0 1px rgba(255, 255, 255, 0.15),
+      0 2px 6px rgba(0, 0, 0, 0.6);
+    display: grid;
+    place-items: center;
+    transition: box-shadow 0.25s, filter 0.25s;
+  }
+  .w7-orb-ball::before {
+    content: "";
+    position: absolute;
+    left: 4px;
+    right: 4px;
+    top: 2px;
+    height: 48%;
+    border-radius: 50% 50% 45% 45%;
+    background: linear-gradient(rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.08));
+    pointer-events: none;
+  }
+  .w7-orb:hover .w7-orb-ball, .w7-orb[aria-expanded="true"] .w7-orb-ball {
+    filter: brightness(1.18) saturate(1.15);
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 255, 255, 0.5),
+      0 0 14px 3px rgba(120, 220, 255, 0.75),
+      0 2px 6px rgba(0, 0, 0, 0.6);
+  }
+  .w7-orb:active .w7-orb-ball { filter: brightness(0.9); }
+
+  .w7-tasks {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: stretch;
+    gap: 2px;
+    padding: 0 4px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .w7-tasks::-webkit-scrollbar { display: none; }
+
+  .w7-taskbtn {
+    --accent: 80 160 255;
+    --hx: 50%;
+    position: relative;
+    width: 58px;
+    flex-shrink: 0;
+    margin: 1px 0;
+    padding: 0;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    background: none;
+    display: grid;
+    place-items: center;
+    cursor: default;
+    overflow: hidden;
+  }
+  .w7-taskbtn.is-running {
+    border-color: rgba(0, 0, 0, 0.55);
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0.08) 50%, rgba(255, 255, 255, 0) 51%, rgba(255, 255, 255, 0.1));
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.3);
+  }
+  .w7-taskbtn.is-active {
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.42), rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0.1) 51%, rgba(255, 255, 255, 0.28));
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.45), inset 0 0 12px rgba(255, 255, 255, 0.25);
+  }
+  /* Colour hot-track: the glow follows the pointer and takes the app's colour */
+  .w7-taskbtn::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at var(--hx) 105%, rgb(var(--accent) / 0.95), rgb(var(--accent) / 0.25) 45%, transparent 75%);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .w7-taskbtn:hover::before { opacity: 1; }
+  .w7-taskbtn:hover { border-color: rgba(0, 0, 0, 0.55); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.45); }
+  .w7-taskbtn > * { position: relative; filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5)); }
+
+  .w7-tray {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding: 0 4px 0 8px;
+    color: #fff;
+    flex-shrink: 0;
+  }
+  .w7-trayicon {
+    display: grid;
+    place-items: center;
+    width: 24px;
+    height: 30px;
+    border: 1px solid transparent;
+    border-radius: 2px;
+    background: none;
+    color: #fff;
+    cursor: default;
+  }
+  .w7-trayicon:hover, .w7-clock:hover {
+    border-color: rgba(255, 255, 255, 0.25);
+    background: linear-gradient(rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.05));
+  }
+  .w7-clock {
+    min-width: 70px;
+    height: 36px;
+    padding: 0 6px;
+    border: 1px solid transparent;
+    border-radius: 2px;
+    background: none;
+    color: #fff;
+    font: inherit;
+    line-height: 1.35;
+    text-align: center;
+    text-shadow: 0 0 4px rgba(0, 0, 0, 0.7);
+    cursor: default;
+  }
+  .w7-showdesktop {
+    width: 15px;
+    flex-shrink: 0;
+    margin-left: 4px;
+    border: 0;
+    border-left: 1px solid rgba(0, 0, 0, 0.45);
+    box-shadow: inset 1px 0 0 rgba(255, 255, 255, 0.3);
+    background: linear-gradient(rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.04));
+    cursor: default;
+  }
+  .w7-showdesktop:hover {
+    background: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.2));
+  }
+
+  /* Aero Peek: windows become glass outlines */
+  .is-peeking .w7-window {
+    background: rgba(255, 255, 255, 0.04);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    border-color: rgba(255, 255, 255, 0.65);
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.35), 0 0 6px rgba(255, 255, 255, 0.25);
+  }
+  .is-peeking .w7-window > * { visibility: hidden; }
+
+  /* ---------- Popups: tooltip, thumbnail, context menu, balloon ---------- */
+
+  .w7-tooltip {
+    padding: 3px 7px 4px;
+    border: 1px solid #767676;
+    border-radius: 3px;
+    background: linear-gradient(#fff, #e4e5f0);
+    box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.35);
+    color: #575757;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+
+  .w7-thumb {
+    padding: 6px 8px 8px;
+    border: 1px solid rgba(0, 0, 0, 0.6);
+    border-radius: 6px;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5), 0 4px 16px rgba(0, 0, 0, 0.5);
+    color: #fff;
+    text-shadow: 0 0 6px #000;
+  }
+
+  .w7-menu {
+    position: fixed;
+    z-index: 3000;
+    min-width: 200px;
+    padding: 2px;
+    border: 1px solid #979797;
+    background:
+      linear-gradient(to right, transparent 27px, #e2e3e3 27px, #e2e3e3 28px, #fff 28px, #fff 29px, transparent 29px),
+      #f0f0f0;
+    box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.35);
+    font-size: 12px;
+  }
+  .w7-menu button {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    height: 22px;
+    padding: 0 20px 0 4px;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    background: none;
+    color: #000;
+    font: inherit;
+    text-align: left;
+    cursor: default;
+  }
+  .w7-menu button > :first-child { width: 18px; display: grid; place-items: center; }
+  .w7-menu button:hover:not(:disabled) {
+    border-color: #aeccf1;
+    background: linear-gradient(to bottom, #f2f8fd, #dcebfc);
+  }
+  .w7-menu button:disabled { color: #8d8d8d; }
+  .w7-menu hr {
+    margin: 2px 2px 2px 30px;
+    border: 0;
+    border-top: 1px solid #e0e0e0;
+    border-bottom: 1px solid #fff;
+  }
+
+  .w7-balloon {
+    position: fixed;
+    right: 14px;
+    bottom: calc(var(--taskbar-h) + 14px);
+    z-index: 1100;
+    width: 300px;
+    padding: 10px 12px 12px;
+    border: 1px solid #767676;
+    border-radius: 4px;
+    background: linear-gradient(#fff, #e4e5f0);
+    box-shadow: 2px 3px 8px rgba(0, 0, 0, 0.4);
+    color: #000;
+  }
+  .w7-balloon::after {
+    content: "";
+    position: absolute;
+    right: 70px;
+    bottom: -12px;
+    border: 6px solid transparent;
+    border-top: 6px solid #e4e5f0;
+    border-left-width: 0;
+    border-right-width: 12px;
+    border-right-color: transparent;
+    filter: drop-shadow(0 1px 0 #767676);
+  }
+
+  /* ---------- Start menu ---------- */
+
+  .w7-start {
+    position: fixed;
+    left: 0;
+    bottom: var(--taskbar-h);
+    z-index: 1001;
+    display: grid;
+    grid-template-columns: 252px 152px;
+    grid-template-rows: 1fr auto;
+    width: 410px;
+    height: min(530px, calc(100dvh - var(--taskbar-h) - 8px));
+    padding: 7px;
+    gap: 0 3px;
+    border: 1px solid rgba(0, 0, 0, 0.7);
+    border-radius: 7px 7px 0 0;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.45), 2px -2px 18px rgba(0, 0, 0, 0.5);
+    --glass-alpha: 0.42;
+  }
+  .w7-start-left {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.55);
+    border-radius: 4px;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.5);
+    overflow: hidden;
+  }
+  .w7-start-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: calc(100% - 8px);
+    margin: 1px 4px;
+    padding: 3px 6px;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    background: none;
+    color: #000;
+    font: inherit;
+    text-align: left;
+    cursor: default;
+  }
+  .w7-start-item:hover, .w7-start-item.is-focused {
+    border-color: #7da2ce;
+    background: linear-gradient(to bottom, #dcebfc, #c1dbfc);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.6);
+  }
+  .w7-start-item small { display: block; color: #6d6d6d; font-size: 11px; }
+  .w7-start-right {
+    display: flex;
+    flex-direction: column;
+    padding-top: 58px;
+    position: relative;
+  }
+  .w7-userframe {
+    position: absolute;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 62px;
+    height: 62px;
+    padding: 6px;
+    border-radius: 6px;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    background:
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.35) 50%, rgba(255, 255, 255, 0.15) 51%, rgba(255, 255, 255, 0.45));
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.6), 0 2px 6px rgba(0, 0, 0, 0.45);
+  }
+  .w7-userframe img, .w7-userframe svg {
+    width: 48px;
+    height: 48px;
+    border-radius: 2px;
+    object-fit: cover;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.45);
+    background: #fff;
+  }
+  .w7-start-link {
+    display: block;
+    width: 100%;
+    margin-bottom: 1px;
+    padding: 5px 8px;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    background: none;
+    color: #fff;
+    font: inherit;
+    text-align: left;
+    text-shadow: 0 0 6px rgba(0, 0, 0, 0.85), 0 0 2px rgba(0, 0, 0, 0.7);
+    cursor: default;
+  }
+  .w7-start-link:hover {
+    border-color: rgba(0, 0, 0, 0.55);
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.12) 50%, rgba(255, 255, 255, 0.02) 51%, rgba(255, 255, 255, 0.2));
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.4);
+  }
+  .w7-start-sep { height: 1px; margin: 4px 6px; background: rgba(0, 0, 0, 0.25); box-shadow: 0 1px rgba(255, 255, 255, 0.25); }
+  .w7-shutdown {
+    display: flex;
+    margin: auto 0 0 8px;
+    align-self: flex-start;
+    border: 1px solid rgba(0, 0, 0, 0.6);
+    border-radius: 3px;
+    overflow: hidden;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+  }
+  .w7-shutdown button {
+    height: 24px;
+    padding: 0 10px;
+    border: 0;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.15) 50%, rgba(0, 0, 0, 0.05) 51%, rgba(255, 255, 255, 0.18));
+    color: #fff;
+    font: inherit;
+    text-shadow: 0 0 4px rgba(0, 0, 0, 0.9);
+    cursor: default;
+  }
+  .w7-shutdown button + button { padding: 0 6px; border-left: 1px solid rgba(0, 0, 0, 0.45); }
+  .w7-shutdown button:hover {
+    background: linear-gradient(to bottom, #f4b8a6, #e0603f 50%, #c4310f 51%, #e98b50);
+  }
+
+  /* ---------- Gadgets & sticky note ---------- */
+
+  .w7-gadgets {
+    position: absolute;
+    top: 14px;
+    right: 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 14px;
+    z-index: 1;
+  }
+
+  .w7-sticky {
+    position: absolute;
+    width: 230px;
+    padding: 22px 14px 14px;
+    background: linear-gradient(to bottom, #fefdd3, #fcf699 100%);
+    border: 1px solid rgba(190, 170, 60, 0.6);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.7) inset, 2px 4px 10px rgba(0, 0, 0, 0.45);
+    color: #2a2716;
+    font-family: var(--hand-font);
+    font-size: 14px;
+    line-height: 1.45;
+    z-index: 1;
+  }
+  .w7-sticky::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 14px;
+    background: linear-gradient(#f9f3a2, #f2e97d);
+    border-bottom: 1px solid rgba(190, 170, 60, 0.35);
+  }
+
+  /* ---------- Boot / logon ---------- */
+
+  .w7-logon {
+    position: fixed;
+    inset: 0;
+    z-index: 5000;
+    display: grid;
+    place-items: center;
+    color: #fff;
+    background:
+      radial-gradient(ellipse 70% 55% at 50% 42%, rgba(120, 200, 255, 0.55), rgba(120, 200, 255, 0) 70%),
+      radial-gradient(ellipse 120% 80% at 50% 120%, #0a3c80, transparent 70%),
+      linear-gradient(#0d4c9a, #082d63 70%, #061f47);
+  }
+  .w7-logon::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(115deg, transparent 0 30%, rgba(255, 255, 255, 0.06) 31% 36%, transparent 37% 60%, rgba(255, 255, 255, 0.05) 61% 63%, transparent 64%);
+    pointer-events: none;
+  }
+
+  .w7-usertile {
+    width: 128px;
+    height: 128px;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.45);
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.45) 50%, rgba(255, 255, 255, 0.25) 51%, rgba(255, 255, 255, 0.6));
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.7), 0 4px 18px rgba(0, 0, 0, 0.45);
+    transition: box-shadow 0.25s;
+  }
+  .w7-usertile img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 3px;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.4);
+    background: #dfeaf6;
+  }
+  button:hover > .w7-usertile, button:focus-visible > .w7-usertile {
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.7), 0 0 22px 4px rgba(140, 220, 255, 0.65);
+  }
+
+  .w7-spinner {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: conic-gradient(from 0deg, rgba(255, 255, 255, 0), rgba(160, 225, 255, 0.95));
+    -webkit-mask: radial-gradient(circle, transparent 6px, #000 7px);
+    mask: radial-gradient(circle, transparent 6px, #000 7px);
+    animation: w7-spin 0.9s linear infinite;
+  }
+  .w7-spinner.is-dark {
+    background: conic-gradient(from 0deg, rgba(40, 130, 220, 0), rgba(40, 130, 220, 0.95));
+  }
+
+  .w7-console {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+    padding: 4px 6px;
+    background: #000;
+    color: var(--console-fg, #c0c0c0);
+    font-family: var(--mono-font);
+    font-size: 14px;
+    line-height: 1.25;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .w7-console input {
+    flex: 1;
+    min-width: 0;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    caret-color: currentColor;
+  }
+
+  @keyframes w7-spin { to { transform: rotate(360deg); } }
+  @keyframes w7-progress-sweep {
+    from { transform: translateX(-120%); }
+    to { transform: translateX(320%); }
+  }
+  @keyframes w7-breathe {
+    0%, 100% { opacity: 0.55; transform: scale(0.96); }
+    50% { opacity: 1; transform: scale(1.04); }
+  }
+
+  @media (max-width: 767px) {
+    .w7-window { padding: 0; border-radius: 0; border-width: 0; }
+    .w7-titlebar { height: 34px; padding-left: 6px; }
+    .w7-cap { width: 34px; height: 24px; }
+    .w7-cap.is-close { width: 52px; }
+    .w7-navpane { display: none; }
+    .w7-taskpane { display: none; }
+    .w7-search { width: 120px; }
+    .w7-icons {
+      right: 4px;
+      grid-auto-flow: row;
+      grid-template-columns: repeat(auto-fill, minmax(82px, 1fr));
+      grid-template-rows: none;
+      grid-auto-rows: 88px;
+      justify-items: center;
+    }
+    .w7-start {
+      width: 100%;
+      grid-template-columns: 1fr 132px;
+      border-radius: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .w7-progress > i::after, .w7-spinner { animation-duration: 0s; animation-iteration-count: 1; }
+  }
+}
+
+@layer components {
+  .no-transparency .w7-glass {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  .no-transparency .w7-window.is-inactive { --glass-alpha: 0.8; }
+}

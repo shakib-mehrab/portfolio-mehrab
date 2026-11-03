@@ -1,475 +1,432 @@
-import { useState, lazy, Suspense } from "react";
-import { AeroWindow } from "./components/AeroWindow";
-import { DesktopIcon } from "./components/DesktopIcon";
-import { Taskbar } from "./components/Taskbar";
-import {
-  User,
-  GraduationCap,
-  Code,
-  Briefcase,
-  Trophy,
-  Award,
-  Mail,
-  FileText,
-  Trash2,
-  UserCheck,
-  Medal,
-} from "lucide-react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { AnimatePresence, MotionConfig, motion, useReducedMotion } from "motion/react";
+import { Check, Github, MonitorCog, RefreshCw, TerminalSquare, X } from "lucide-react";
+import { OSContext, useOS, type OSApi } from "./os/context";
+import { apps, desktopOrder } from "./os/registry";
+import { Window, type WinState } from "./os/Window";
+import { Taskbar } from "./os/Taskbar";
+import { StartMenu } from "./os/StartMenu";
+import { Gadgets } from "./os/Gadgets";
+import { Boot, type Phase } from "./os/Boot";
+import { Icon } from "./os/icons";
+import { glassRgb, loadTheme, saveTheme, wallpapers, type ThemeState } from "./os/theme";
+import { photos } from "../data/photos";
 
-// Lazy load window content components for better performance
-const WelcomeWindowContent = lazy(() => import("./components/WelcomeWindowContent").then(m => ({ default: m.WelcomeWindowContent })));
-const AboutWindowContent = lazy(() => import("./components/AboutWindowContent").then(m => ({ default: m.AboutWindowContent })));
-const EducationWindowContent = lazy(() => import("./components/EducationWindowContent").then(m => ({ default: m.EducationWindowContent })));
-const SkillsWindowContent = lazy(() => import("./components/SkillsWindowContent").then(m => ({ default: m.SkillsWindowContent })));
-const ProjectsWindowContent = lazy(() => import("./components/ProjectsWindowContent").then(m => ({ default: m.ProjectsWindowContent })));
-const AchievementsWindowContent = lazy(() => import("./components/AchievementsWindowContent").then(m => ({ default: m.AchievementsWindowContent })));
-const CoCurricularsWindowContent = lazy(() => import("./components/CoCurricularsWindowContent").then(m => ({ default: m.CoCurricularsWindowContent })));
-const ContactWindowContent = lazy(() => import("./components/ContactWindowContent").then(m => ({ default: m.ContactWindowContent })));
-const ExperienceWindowContent = lazy(() => import("./components/ExperienceWindowContent").then(m => ({ default: m.ExperienceWindowContent })));
-const AwardsWindowContent = lazy(() => import("./components/AwardsWindowContent").then(m => ({ default: m.AwardsWindowContent })));
+const TASKBAR = 40;
+const BOOTED = "mehrab7.booted";
 
-// Loading component for lazy-loaded content
-const WindowContentLoader = () => (
-  <div className="flex items-center justify-center h-full">
-    <div className="text-center">
-      <div className="w-12 h-12 border-4 border-white/20 border-t-white/80 rounded-full animate-spin mx-auto mb-3"></div>
-      <p className="text-white/60 text-sm">Loading...</p>
-    </div>
-  </div>
-);
-
-function getCenterPosition(width: number, height: number) {
-  return {
-    x: Math.max(10, Math.round((window.innerWidth - width) / 2)),
-    y: Math.max(10, Math.round((window.innerHeight - 48 - height) / 2)),
-  };
+function firstPhase(reduced: boolean): Phase {
+  if (new URLSearchParams(location.search).get("boot") === "0") return "desktop";
+  try {
+    if (sessionStorage.getItem(BOOTED)) return "welcome";
+  } catch {
+    // ignore
+  }
+  return reduced ? "logon" : "post";
 }
 
-interface OpenWindow {
-  id: string;
-  title: string;
-  icon: React.ReactNode;
-  content: React.ReactNode;
-  position: { x: number; y: number };
-  size: { width: number; height: number };
-  isMaximized: boolean;
-  isMinimized: boolean;
+function useIsMobile() {
+  const [m, setM] = useState(() => window.matchMedia("(max-width: 767px)").matches);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const on = () => setM(mq.matches);
+    mq.addEventListener("change", on);
+    return () => mq.removeEventListener("change", on);
+  }, []);
+  return m;
 }
 
 export default function App() {
-  const [openWindows, setOpenWindows] = useState<OpenWindow[]>(() => [
-    {
-      id: "welcome",
-      title: "Welcome",
-      icon: <User className="w-4 h-4" />,
-      content: <Suspense fallback={<WindowContentLoader />}><WelcomeWindowContent /></Suspense>,
-      position: getCenterPosition(800, 500),
-      size: { width: 800, height: 500 },
-      isMaximized: false,
-      isMinimized: false,
-    },
-  ]);
+  const reduced = !!useReducedMotion();
+  const isMobile = useIsMobile();
+  const [phase, setPhaseRaw] = useState<Phase>(() => firstPhase(reduced));
+  const restarting = useRef(false);
+  const [windows, setWindows] = useState<WinState[]>([]);
+  const topZ = useRef(10);
+  const [startOpen, setStartOpen] = useState(false);
+  const [peek, setPeek] = useState(false);
+  const hiddenByShowDesktop = useRef<string[]>([]);
+  const [theme, setThemeState] = useState<ThemeState>(loadTheme);
+  const [binEmpty, setBinEmpty] = useState(false);
+  const [showGadgets, setShowGadgets] = useState(true);
+  const [balloon, setBalloon] = useState(false);
 
-  const [activeWindowId, setActiveWindowId] = useState<string>("welcome");
-
-  const desktopIcons = [
-    {
-      id: "about",
-      icon: (
-        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-400 via-blue-500 to-blue-600 flex items-center justify-center shadow-lg">
-          <User className="w-7 h-7 text-white drop-shadow-md" />
-        </div>
-      ),
-      label: "About Me",
-    },
-    {
-      id: "education",
-      icon: (
-        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-400 via-purple-500 to-purple-600 flex items-center justify-center shadow-lg">
-          <GraduationCap className="w-7 h-7 text-white drop-shadow-md" />
-        </div>
-      ),
-      label: "Education",
-    },
-    {
-      id: "skills",
-      icon: (
-        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-400 via-green-500 to-green-600 flex items-center justify-center shadow-lg">
-          <Code className="w-7 h-7 text-white drop-shadow-md" />
-        </div>
-      ),
-      label: "Skills",
-    },
-    {
-      id: "projects",
-      icon: (
-        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-400 via-orange-500 to-orange-600 flex items-center justify-center shadow-lg">
-          <Briefcase className="w-7 h-7 text-white drop-shadow-md" />
-        </div>
-      ),
-      label: "Projects",
-    },
-    {
-      id: "achievements",
-      icon: (
-        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-yellow-400 via-yellow-500 to-amber-600 flex items-center justify-center shadow-lg">
-          <Trophy className="w-7 h-7 text-white drop-shadow-md" />
-        </div>
-      ),
-      label: "Achievements",
-    },
-    {
-      id: "cocurriculars",
-      icon: (
-        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-400 via-indigo-500 to-indigo-600 flex items-center justify-center shadow-lg">
-          <Award className="w-7 h-7 text-white drop-shadow-md" />
-        </div>
-      ),
-      label: "Co-Curriculars",
-    },
-    {
-      id: "contact",
-      icon: (
-        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-red-400 via-red-500 to-red-600 flex items-center justify-center shadow-lg">
-          <Mail className="w-7 h-7 text-white drop-shadow-md" />
-        </div>
-      ),
-      label: "Contact Me",
-    },
-    {
-      id: "resume",
-      icon: (
-        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-400 via-cyan-500 to-cyan-600 flex items-center justify-center shadow-lg">
-          <FileText className="w-7 h-7 text-white drop-shadow-md" />
-        </div>
-      ),
-      label: "Resume",
-    },
-    {
-      id: "recycle",
-      icon: (
-        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-gray-400 via-gray-500 to-gray-600 flex items-center justify-center shadow-lg">
-          <Trash2 className="w-7 h-7 text-white drop-shadow-md" />
-        </div>
-      ),
-      label: "Recycle Bin",
-    },
-    {
-      id: "experience",
-      icon: (
-        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-teal-400 via-teal-500 to-teal-600 flex items-center justify-center shadow-lg">
-          <UserCheck className="w-7 h-7 text-white drop-shadow-md" />
-        </div>
-      ),
-      label: "Experience",
-    },
-    {
-      id: "awards",
-      icon: (
-        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-400 via-amber-500 to-amber-600 flex items-center justify-center shadow-lg">
-          <Medal className="w-7 h-7 text-white drop-shadow-md" />
-        </div>
-      ),
-      label: "Certifications",
-    },
-  ];
-
-  const openWindow = (iconId: string) => {
-    // Check if window is already open
-    const existingWindow = openWindows.find((w) => w.id === iconId);
-    if (existingWindow) {
-      setActiveWindowId(iconId);
-      return;
+  const setPhase = useCallback((p: Phase) => {
+    if (p === "off" && restarting.current) {
+      restarting.current = false;
+      p = "post";
     }
+    setPhaseRaw(p);
+  }, []);
 
-    const windowConfigs: { [key: string]: Omit<OpenWindow, "id"> } = {
-      about: {
-        title: "About Me",
-        icon: <User className="w-4 h-4" />,
-        content: <Suspense fallback={<WindowContentLoader />}><AboutWindowContent /></Suspense>,
-        position: { x: 150, y: 80 },
-        size: { width: 900, height: 600 },
-        isMaximized: false,
-        isMinimized: false,
-      },
-      education: {
-        title: "Education",
-        icon: <GraduationCap className="w-4 h-4" />,
-        content: <Suspense fallback={<WindowContentLoader />}><EducationWindowContent /></Suspense>,
-        position: { x: 200, y: 100 },
-        size: { width: 850, height: 600 },
-        isMaximized: false,
-        isMinimized: false,
-      },
-      skills: {
-        title: "Skills",
-        icon: <Code className="w-4 h-4" />,
-        content: <Suspense fallback={<WindowContentLoader />}><SkillsWindowContent /></Suspense>,
-        position: { x: 180, y: 90 },
-        size: { width: 1000, height: 650 },
-        isMaximized: false,
-        isMinimized: false,
-      },
-      projects: {
-        title: "Projects",
-        icon: <Briefcase className="w-4 h-4" />,
-        content: <Suspense fallback={<WindowContentLoader />}><ProjectsWindowContent /></Suspense>,
-        position: { x: 160, y: 70 },
-        size: { width: 1100, height: 700 },
-        isMaximized: false,
-        isMinimized: false,
-      },
-      achievements: {
-        title: "Achievements",
-        icon: <Trophy className="w-4 h-4" />,
-        content: <Suspense fallback={<WindowContentLoader />}><AchievementsWindowContent /></Suspense>,
-        position: { x: 220, y: 110 },
-        size: { width: 900, height: 600 },
-        isMaximized: false,
-        isMinimized: false,
-      },
-      cocurriculars: {
-        title: "Co-Curricular Activities",
-        icon: <Award className="w-4 h-4" />,
-        content: <Suspense fallback={<WindowContentLoader />}><CoCurricularsWindowContent /></Suspense>,
-        position: { x: 190, y: 95 },
-        size: { width: 900, height: 600 },
-        isMaximized: false,
-        isMinimized: false,
-      },
-      contact: {
-        title: "Contact Me",
-        icon: <Mail className="w-4 h-4" />,
-        content: <Suspense fallback={<WindowContentLoader />}><ContactWindowContent /></Suspense>,
-        position: { x: 170, y: 85 },
-        size: { width: 950, height: 650 },
-        isMaximized: false,
-        isMinimized: false,
-      },
-      resume: {
-        title: "Resume",
-        icon: <FileText className="w-4 h-4" />,
-        content: (
-          <div className="flex items-center justify-center h-full p-8">
-            <div className="text-center backdrop-blur-xl bg-white/[0.05] border border-white/[0.08] rounded-3xl p-10 shadow-[0_0_35px_rgba(59,130,246,0.20)]">
-              <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center mx-auto mb-5 shadow-lg">
-                <FileText className="w-10 h-10 text-white" />
-              </div>
-              <h3 className="text-2xl font-bold inline-block bg-gradient-to-r from-blue-200 via-cyan-200 to-purple-200 bg-clip-text text-transparent mb-2">Resume</h3>
-              <p className="text-white/60 mb-6 text-sm">Download my resume to learn more about my experience</p>
-              <a
-                href="/resume.pdf"
-                download="Shakib_Mehrab_Resume.pdf"
-                className="inline-block px-6 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white rounded-xl font-semibold transition-all duration-200 hover:shadow-[0_0_20px_rgba(59,130,246,0.4)] hover:-translate-y-0.5"
-              >
-                Download PDF
-              </a>
-            </div>
-          </div>
-        ),
-        position: { x: 300, y: 150 },
-        size: { width: 600, height: 400 },
-        isMaximized: false,
-        isMinimized: false,
-      },
-      recycle: {
-        title: "Recycle Bin",
-        icon: <Trash2 className="w-4 h-4" />,
-        content: (
-          <div className="flex items-center justify-center h-full p-8">
-            <div className="text-center backdrop-blur-xl bg-white/[0.05] border border-white/[0.08] rounded-3xl p-10 shadow-[0_0_35px_rgba(59,130,246,0.10)]">
-              <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-gray-500 to-gray-700 flex items-center justify-center mx-auto mb-5 shadow-lg">
-                <Trash2 className="w-10 h-10 text-white" />
-              </div>
-              <h3 className="text-2xl font-bold text-white/80 mb-2">Recycle Bin</h3>
-              <p className="text-white/45 text-sm">No items in the recycle bin</p>
-            </div>
-          </div>
-        ),
-        position: { x: 350, y: 180 },
-        size: { width: 500, height: 400 },
-        isMaximized: false,
-        isMinimized: false,
-      },
-      experience: {
-        title: "Experience",
-        icon: <UserCheck className="w-4 h-4" />,
-        content: <Suspense fallback={<WindowContentLoader />}><ExperienceWindowContent /></Suspense>,
-        position: { x: 170, y: 80 },
-        size: { width: 950, height: 650 },
-        isMaximized: false,
-        isMinimized: false,
-      },
-      awards: {
-        title: "Certifications",
-        icon: <Medal className="w-4 h-4" />,
-        content: <Suspense fallback={<WindowContentLoader />}><AwardsWindowContent /></Suspense>,
-        position: { x: 190, y: 100 },
-        size: { width: 1050, height: 700 },
-        isMaximized: false,
-        isMinimized: false,
-      },
-    };
+  // ---- theme ----
+  useEffect(() => {
+    const root = document.documentElement;
+    root.style.setProperty("--glass-rgb", glassRgb(theme.glass));
+    root.style.setProperty("--glass-alpha", String(theme.transparency ? theme.intensity : 0.92));
+    root.classList.toggle("no-transparency", !theme.transparency);
+    saveTheme(theme);
+  }, [theme]);
+  const setTheme = useCallback((patch: Partial<ThemeState>) => setThemeState((t) => ({ ...t, ...patch })), []);
+  const wallpaper = useMemo(
+    () => wallpapers.find((w) => w.id === theme.wallpaper)?.src ?? photos.find((p) => p.src === theme.wallpaper)?.src ?? wallpapers[0].src,
+    [theme.wallpaper],
+  );
 
-    const config = windowConfigs[iconId];
-    if (config) {
-      const newWindow: OpenWindow = {
-        id: iconId,
-        ...config,
-        position: getCenterPosition(config.size.width, config.size.height),
-      };
-      
-      // Remove welcome window and add new window in single state update
-      const updatedWindows = iconId !== "welcome" 
-        ? openWindows.filter((w) => w.id !== "welcome")
-        : openWindows;
-      
-      setOpenWindows([...updatedWindows, newWindow]);
-      setActiveWindowId(iconId);
-    }
+  // ---- window manager ----
+  const activeId = useMemo(() => {
+    const visible = windows.filter((w) => !w.minimized);
+    return visible.length ? visible.reduce((a, b) => (a.z > b.z ? a : b)).id : null;
+  }, [windows]);
+
+  const focus = useCallback((id: string) => {
+    setWindows((ws) => {
+      const w = ws.find((x) => x.id === id);
+      if (!w || (w.z === topZ.current && !w.minimized)) return ws;
+      const z = ++topZ.current;
+      return ws.map((x) => (x.id === id ? { ...x, z, minimized: false } : x));
+    });
+  }, []);
+
+  const openApp = useCallback((appId: string, props?: Record<string, unknown>) => {
+    const app = apps[appId];
+    if (!app) return;
+    setStartOpen(false);
+    setWindows((ws) => {
+      const z = ++topZ.current;
+      const existing = ws.find((w) => w.appId === appId);
+      if (existing) return ws.map((w) => (w.id === appId ? { ...w, z, minimized: false, props: props ?? w.props } : w));
+      const vw = window.innerWidth;
+      const vh = window.innerHeight - TASKBAR;
+      const w = Math.min(app.w, vw - 40);
+      const h = Math.min(app.h, vh - 30);
+      const offset = (ws.length % 6) * 26;
+      return [
+        ...ws,
+        {
+          id: appId,
+          appId,
+          title: app.title,
+          icon: app.icon,
+          w,
+          h,
+          x: Math.max(8, Math.round((vw - w) / 2) - 60 + offset),
+          y: Math.max(6, Math.round((vh - h) / 2) - 30 + offset),
+          z,
+          maximized: false,
+          minimized: false,
+          snap: null,
+          props,
+        },
+      ];
+    });
+  }, []);
+
+  const closeApp = useCallback((id: string) => setWindows((ws) => ws.filter((w) => w.id !== id)), []);
+  const patchWin = useCallback((id: string, patch: Partial<WinState>) => setWindows((ws) => ws.map((w) => (w.id === id ? { ...w, ...patch } : w))), []);
+  // Returning the same array when nothing changed lets apps call this from effects safely
+  const setTitle = useCallback(
+    (id: string, title: string) => setWindows((ws) => (ws.find((w) => w.id === id)?.title === title ? ws : ws.map((w) => (w.id === id ? { ...w, title } : w)))),
+    [],
+  );
+
+  const onTask = (appId: string) => {
+    const w = windows.find((x) => x.appId === appId);
+    if (!w) openApp(appId);
+    else if (w.minimized) focus(w.id);
+    else if (w.id === activeId) patchWin(w.id, { minimized: true });
+    else focus(w.id);
   };
 
-  const closeWindow = (windowId: string) => {
-    setOpenWindows(openWindows.filter((w) => w.id !== windowId));
-    if (activeWindowId === windowId) {
-      const remainingWindows = openWindows.filter((w) => w.id !== windowId);
-      setActiveWindowId(remainingWindows.length > 0 ? remainingWindows[0].id : "");
-    }
-  };
-
-  const toggleMaximize = (windowId: string) => {
-    setOpenWindows(
-      openWindows.map((w) =>
-        w.id === windowId ? { ...w, isMaximized: !w.isMaximized } : w
-      )
-    );
-  };
-
-  const minimizeWindow = (windowId: string) => {
-    setOpenWindows(
-      openWindows.map((w) =>
-        w.id === windowId ? { ...w, isMinimized: true } : w
-      )
-    );
-  };
-
-  const restoreWindow = (windowId: string) => {
-    setOpenWindows(
-      openWindows.map((w) =>
-        w.id === windowId ? { ...w, isMinimized: false } : w
-      )
-    );
-    setActiveWindowId(windowId);
-  };
-
-  const handleTaskbarClick = (windowId: string) => {
-    const window = openWindows.find((w) => w.id === windowId);
-    if (window?.isMinimized) {
-      restoreWindow(windowId);
+  const showDesktop = () => {
+    const visible = windows.filter((w) => !w.minimized).map((w) => w.id);
+    if (visible.length) {
+      hiddenByShowDesktop.current = visible;
+      setWindows((ws) => ws.map((w) => ({ ...w, minimized: true })));
     } else {
-      setActiveWindowId(windowId);
+      const back = hiddenByShowDesktop.current;
+      setWindows((ws) => ws.map((w) => (back.includes(w.id) ? { ...w, minimized: false } : w)));
     }
+  };
+
+  const shutdown = useCallback(
+    (mode: "shutdown" | "restart" | "logoff") => {
+      setStartOpen(false);
+      setWindows([]);
+      setBalloon(false);
+      restarting.current = mode === "restart";
+      setPhase(mode === "logoff" ? "logon" : "shutting");
+    },
+    [setPhase],
+  );
+
+  // ---- boot → desktop ----
+  useEffect(() => {
+    if (phase !== "desktop") return;
+    try {
+      sessionStorage.setItem(BOOTED, "1");
+    } catch {
+      // ignore
+    }
+    // ?open=projects deep-links straight into a program, e.g. from a LinkedIn post
+    const deep = new URLSearchParams(location.search).get("open");
+    if (deep && apps[deep]) openApp(deep);
+    else if (!isMobile) openApp("welcome");
+    // On phones the sticky note already says this, and the balloon would cover it
+    const a = setTimeout(() => setBalloon(!isMobile), 1400);
+    const b = setTimeout(() => setBalloon(false), 12000);
+    return () => (clearTimeout(a), clearTimeout(b));
+    // isMobile is read once on arrival; resizing later shouldn't reopen windows
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phase, openApp]);
+
+  // Ctrl+Esc opened the Start menu on real Windows too
+  useEffect(() => {
+    const key = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.key === "Escape") setStartOpen((v) => !v);
+    };
+    window.addEventListener("keydown", key);
+    return () => window.removeEventListener("keydown", key);
+  }, []);
+
+  const os: OSApi = {
+    openApp,
+    closeApp,
+    theme,
+    setTheme,
+    binEmpty,
+    emptyBin: () => setBinEmpty(true),
+    shutdown,
+    isMobile,
+  };
+
+  const onDesktop = phase === "desktop" || phase === "welcome";
+
+  return (
+    <MotionConfig reducedMotion="user">
+      <OSContext.Provider value={os}>
+        <div className={`w7 ${peek ? "is-peeking" : ""}`}>
+          {onDesktop && (
+            <div className="w7-desktop" style={{ backgroundImage: `url("${wallpaper}")` }}>
+              <Desktop
+                binEmpty={binEmpty}
+                showGadgets={showGadgets && !isMobile}
+                onToggleGadgets={() => setShowGadgets((v) => !v)}
+                isMobile={isMobile}
+              />
+
+              <AnimatePresence>
+                {windows.map((w) => {
+                  const app = apps[w.appId];
+                  const App = app.component;
+                  return (
+                    <Window
+                      key={w.id}
+                      win={w}
+                      active={w.id === activeId}
+                      mobile={isMobile}
+                      resizable={app.resizable !== false}
+                      onFocus={() => focus(w.id)}
+                      onChange={(p) => patchWin(w.id, p)}
+                      onClose={() => closeApp(w.id)}
+                      onMinimize={() => patchWin(w.id, { minimized: true })}
+                    >
+                      <App windowId={w.id} props={w.props} close={() => closeApp(w.id)} setTitle={(t) => setTitle(w.id, t)} />
+                    </Window>
+                  );
+                })}
+              </AnimatePresence>
+
+              <AnimatePresence>
+                {startOpen && <StartMenu onOpen={openApp} onClose={() => setStartOpen(false)} onPower={shutdown} />}
+              </AnimatePresence>
+
+              <Taskbar
+                windows={windows}
+                activeId={activeId}
+                startOpen={startOpen}
+                onStart={() => setStartOpen((v) => !v)}
+                onTask={onTask}
+                onShowDesktop={showDesktop}
+                onPeek={setPeek}
+              />
+
+              <AnimatePresence>
+                {balloon && (
+                  <motion.div
+                    className="w7-balloon"
+                    role="status"
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                  >
+                    <button className="absolute top-1.5 right-1.5 rounded-[2px] p-0.5 text-[#555] hover:bg-[#e8e8e8]" aria-label="Close" onClick={() => setBalloon(false)}>
+                      <X size={12} />
+                    </button>
+                    <div className="flex items-center gap-2 font-semibold">
+                      <Icon name="info" size={18} />
+                      Nostalgia drivers installed
+                    </div>
+                    <p className="mt-1.5 pr-3 leading-relaxed text-[#333]">
+                      Mehrab 7 finished setting up this desktop. {isMobile ? "Tap" : "Double-click"} an icon to open it, or press the orb to look around.
+                    </p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          )}
+
+          <Boot phase={phase} setPhase={setPhase} reduced={reduced} />
+        </div>
+      </OSContext.Provider>
+    </MotionConfig>
+  );
+}
+
+/* ---------------- Desktop surface: icons, marquee, context menu, notes ---------------- */
+
+function Desktop({ binEmpty, showGadgets, onToggleGadgets, isMobile }: { binEmpty: boolean; showGadgets: boolean; onToggleGadgets: () => void; isMobile: boolean }) {
+  const { openApp } = useOS();
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [marquee, setMarquee] = useState<{ x0: number; y0: number; x1: number; y1: number } | null>(null);
+  const [menu, setMenu] = useState<{ x: number; y: number } | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
+  const surface = useRef<HTMLDivElement>(null);
+  const coarse = useMemo(() => window.matchMedia("(pointer: coarse)").matches, []);
+
+  useEffect(() => {
+    if (!menu) return;
+    const close = () => setMenu(null);
+    window.addEventListener("pointerdown", close);
+    window.addEventListener("keydown", close);
+    return () => {
+      window.removeEventListener("pointerdown", close);
+      window.removeEventListener("keydown", close);
+    };
+  }, [menu]);
+
+  const onPointerDown = (e: React.PointerEvent) => {
+    if (e.target !== surface.current || e.button !== 0) return;
+    setSelected(new Set());
+    if (coarse) return;
+    surface.current.setPointerCapture(e.pointerId);
+    setMarquee({ x0: e.clientX, y0: e.clientY, x1: e.clientX, y1: e.clientY });
+  };
+
+  const onPointerMove = (e: React.PointerEvent) => {
+    if (!marquee) return;
+    const m = { ...marquee, x1: e.clientX, y1: e.clientY };
+    setMarquee(m);
+    const [l, r] = [Math.min(m.x0, m.x1), Math.max(m.x0, m.x1)];
+    const [t, b] = [Math.min(m.y0, m.y1), Math.max(m.y0, m.y1)];
+    const hit = new Set<string>();
+    surface.current?.querySelectorAll<HTMLElement>("[data-icon]").forEach((el) => {
+      const rc = el.getBoundingClientRect();
+      if (rc.right > l && rc.left < r && rc.bottom > t && rc.top < b) hit.add(el.dataset.icon!);
+    });
+    setSelected(hit);
+  };
+
+  const refresh = () => {
+    setRefreshing(true);
+    setTimeout(() => setRefreshing(false), 140);
   };
 
   return (
-    <div className="w-full h-screen relative overflow-hidden bg-desktop">
-      {/* Ambient gradient overlay */}
-      <div className="absolute inset-0 opacity-40 bg-ambient-overlay" />
+    <div
+      ref={surface}
+      className="absolute inset-0"
+      style={{ bottom: TASKBAR }}
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={() => setMarquee(null)}
+      onContextMenu={(e) => {
+        if (e.target !== surface.current) return;
+        e.preventDefault();
+        setMenu({ x: Math.min(e.clientX, window.innerWidth - 210), y: Math.min(e.clientY, window.innerHeight - 200) });
+      }}
+    >
+      <div className="w7-icons" style={{ visibility: refreshing ? "hidden" : "visible" }}>
+        {desktopOrder.map((id) => {
+          const app = apps[id];
+          const icon = id === "bin" ? (binEmpty ? "bin" : "binFull") : app.icon;
+          return (
+            <button
+              key={id}
+              data-icon={id}
+              className={`w7-deskicon ${selected.has(id) ? "is-selected" : ""}`}
+              onClick={(e) => {
+                if (coarse) return openApp(id);
+                setSelected(e.ctrlKey ? new Set([...selected, id]) : new Set([id]));
+              }}
+              onDoubleClick={() => openApp(id)}
+              onKeyDown={(e) => e.key === "Enter" && openApp(id)}
+            >
+              <Icon name={icon} size={48} />
+              <span>{app.label}</span>
+            </button>
+          );
+        })}
+      </div>
 
-      {/* Decorative floating elements — reference_style inspired - hidden on mobile */}
-      <div className="hidden md:block absolute top-1/4 right-[12%] w-56 h-56 border border-blue-500/10 rounded-full pointer-events-none animate-orbit" />
-      <div className="hidden md:block absolute bottom-1/3 left-[30%] w-36 h-36 border border-purple-500/10 rounded-lg rotate-12 pointer-events-none" />
-      <div className="hidden md:block absolute top-[12%] right-[35%] w-2 h-2 bg-blue-400/60 rounded-full pointer-events-none animate-float" />
-      <div className="hidden md:block absolute top-[60%] right-[8%] w-1.5 h-1.5 bg-purple-400/60 rounded-full pointer-events-none animate-float-slow" />
-      <div className="hidden md:block absolute top-[35%] left-[40%] w-1 h-1 bg-cyan-400/50 rounded-full pointer-events-none animate-pulse" />
-      <div className="hidden md:block absolute bottom-[20%] right-[25%] w-1.5 h-1.5 bg-blue-300/40 rounded-full pointer-events-none animate-pulse delay-pulse-1s" />
+      {showGadgets && <Gadgets />}
 
-      {/* Welcome Message - Transparent Background Text */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
-        <div className="text-center max-w-4xl px-6 md:px-8">
-          <h1 
-            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 md:mb-6 opacity-[0.12] text-cyan-200 whitespace-nowrap"
-            style={{ 
-              fontFamily: '"Quantico", sans-serif',
-              textShadow: '0 0 30px rgba(34, 211, 238, 0.15), 0 0 60px rgba(59, 130, 246, 0.1), 0 0 90px rgba(147, 51, 234, 0.08)'
-            }}
-          >
-            Welcome to My Portfolio!
-          </h1>
-          <p 
-            className="text-base sm:text-lg md:text-xl lg:text-2xl mb-6 md:mb-8 opacity-[0.11] text-blue-200 leading-relaxed"
-            style={{ 
-              fontFamily: '"Quantico", sans-serif',
-              textShadow: '0 0 25px rgba(59, 130, 246, 0.12), 0 0 50px rgba(34, 211, 238, 0.08)'
-            }}
-          >
-            To explore, click any of the icons on the desktop menu
-          </p>
-          <p 
-            className="text-xs sm:text-sm md:text-base lg:text-lg opacity-[0.09] text-purple-200/80 leading-relaxed px-4"
-            style={{ 
-              fontFamily: '"Quantico", sans-serif',
-              fontStyle: 'italic',
-              textShadow: '0 0 20px rgba(147, 51, 234, 0.1), 0 0 40px rgba(59, 130, 246, 0.06)'
-            }}
-          >
-            Inspired by the nostalgia of Windows 7—my childhood desktop theme that sparked my love for technology. This portfolio brings back those cherished memories.
-          </p>
+      <StickyNote mobile={isMobile} />
+
+      {marquee && (
+        <div
+          className="pointer-events-none fixed z-[5] border border-[#3399ff] bg-[rgba(51,153,255,.22)]"
+          style={{
+            left: Math.min(marquee.x0, marquee.x1),
+            top: Math.min(marquee.y0, marquee.y1),
+            width: Math.abs(marquee.x1 - marquee.x0),
+            height: Math.abs(marquee.y1 - marquee.y0),
+          }}
+        />
+      )}
+
+      {menu && (
+        <div className="w7-menu" style={{ left: menu.x, top: menu.y }} role="menu" onPointerDown={(e) => e.stopPropagation()}>
+          <button onClick={() => (refresh(), setMenu(null))}>
+            <span><RefreshCw size={13} /></span>Refresh
+          </button>
+          <hr />
+          <button onClick={() => (openApp("cmd"), setMenu(null))}>
+            <span><TerminalSquare size={13} /></span>Open Command Prompt here
+          </button>
+          <button onClick={() => (onToggleGadgets(), setMenu(null))} disabled={isMobile}>
+            <span>{showGadgets && <Check size={13} />}</span>Show desktop gadgets
+          </button>
+          <hr />
+          <button onClick={() => (window.open("https://github.com/shakib-mehrab/portfolio-mehrab", "_blank"), setMenu(null))}>
+            <span><Github size={13} /></span>View source on GitHub
+          </button>
+          <button onClick={() => (openApp("personalize"), setMenu(null))}>
+            <span><MonitorCog size={13} /></span>Personalize
+          </button>
         </div>
-      </div>
+      )}
+    </div>
+  );
+}
 
-      {/* Desktop Icons — 2-col grid on desktop, hidden on mobile (use Start Menu instead) */}
-      <div className="hidden md:grid absolute top-4 left-3 z-10 grid-cols-2 gap-1 content-start overflow-y-auto overflow-x-hidden scrollbar-none desktop-icons-grid">
-        {desktopIcons.map((icon) => (
-          <DesktopIcon
-            key={icon.id}
-            icon={icon.icon}
-            label={icon.label}
-            onClick={() => openWindow(icon.id)}
-            isOpen={activeWindowId === icon.id}
-          />
-        ))}
-      </div>
-
-      {/* Windows */}
-      {openWindows
-        .filter((window) => !window.isMinimized)
-        .map((window, index) => (
-        <AeroWindow
-          key={window.id}
-          title={window.title}
-          icon={window.icon}
-          defaultPosition={window.position}
-          defaultSize={window.size}
-          onClose={() => closeWindow(window.id)}
-          onMinimize={() => minimizeWindow(window.id)}
-          onMaximize={() => toggleMaximize(window.id)}
-          isActive={activeWindowId === window.id}
-          onFocus={() => setActiveWindowId(window.id)}
-          zIndex={activeWindowId === window.id ? 100 : 10 + index}
-          isMaximized={window.isMaximized}
-        >
-          {window.content}
-        </AeroWindow>
-      ))}
-
-      {/* Taskbar */}
-      <Taskbar
-        openWindows={openWindows.map((w) => ({
-          id: w.id,
-          title: w.title,
-          icon: w.icon,
-        }))}
-        activeWindow={activeWindowId}
-        onWindowClick={handleTaskbarClick}
-        onStartMenuItemClick={(item) => openWindow(item)}
-        onStartButtonClick={() => {
-          // Close welcome window on mobile when Start menu is opened
-          if (window.innerWidth < 768) {
-            setOpenWindows((windows) => windows.filter((w) => w.id !== "welcome"));
-          }
-        }}
-      />
+function StickyNote({ mobile }: { mobile: boolean }) {
+  const [hidden, setHidden] = useState(false);
+  if (hidden) return null;
+  return (
+    <div
+      className="w7-sticky"
+      style={mobile ? { left: 12, right: 12, bottom: 12, width: "auto" } : { right: 184, top: 22 }}
+      role="note"
+    >
+      <button aria-label="Close note" className="absolute top-0 right-1 font-[Segoe_UI,sans-serif] text-[12px] text-[#7a6f2a] hover:text-black" onClick={() => setHidden(true)}>
+        ×
+      </button>
+      Windows 7 was my first OS. Now I write software for a living, so I rebuilt it from memory.
+      <br />
+      <br />→ {mobile ? "Tap" : "Double-click"} any icon
+      <br />→ or press the orb, bottom left
+      <div className="mt-2 text-right">— Mehrab</div>
     </div>
   );
 }

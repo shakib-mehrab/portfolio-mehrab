@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
+<defs>
+<linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1b1748"/><stop offset=".38" stop-color="#5b2c74"/><stop offset=".62" stop-color="#d4646b"/><stop offset=".8" stop-color="#f6b46c"/></linearGradient>
+<radialGradient id="sun" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(1240 690) scale(520 360)"><stop offset="0" stop-color="#fff4d0"/><stop offset=".1" stop-color="#ffd590" stop-opacity=".9"/><stop offset="1" stop-color="#ff9a6a" stop-opacity="0"/></radialGradient>
+<filter id="b"><feGaussianBlur stdDeviation="2"/></filter>
+</defs>
+<rect width="1920" height="1080" fill="url(#sky)"/>
+<rect width="1920" height="1080" fill="url(#sun)"/>
+<circle cx="1240" cy="700" r="70" fill="#fff1c9" opacity=".95"/>
+<path d="M0 760 C 260 640, 520 700, 760 660 S 1260 600, 1500 680 1800 640 1920 660 V1080H0z" fill="#7a3a6b" opacity=".75" filter="url(#b)"/>
+<path d="M0 840 C 300 760, 600 820, 900 780 S 1400 720, 1920 800 V1080H0z" fill="#4a2558"/>
+<path d="M0 930 C 400 860, 800 940, 1150 900 S 1650 860, 1920 900 V1080H0z" fill="#2b1640"/>
+<path d="M0 1010 C 500 960, 1000 1020, 1920 980 V1080H0z" fill="#170b26"/>
+</svg>
